@@ -13,15 +13,7 @@ class BaseSvgEntity implements SvgEntity{
     
 
     drag(e:any): void {}
-  
-
-  
-
-
     click(): void {}
-
-
-
     useKeyEvent(key: string): void {}
 
 

@@ -18,7 +18,6 @@ class MoveWithDrag extends SvgAbility{
 
 
     override drag(e:PointerEvent): void {
-        console.log(e.type)
         switch(e.type){
             case "pointerdown":
                 this.isDragging = true
@@ -32,6 +31,7 @@ class MoveWithDrag extends SvgAbility{
                 break;
     
             }
+        super.drag(e)
     }
 
 
@@ -65,11 +65,9 @@ class MoveWithDrag extends SvgAbility{
      * @returns the center point of the svg
      */
     getCenterOfSVG(){
-        console.log(this.getElement().getBBox())
         let bbox = this.getElement().getBBox()
         let centerX = bbox.x + bbox.width/2
         let centerY = bbox.y + bbox.height/2 
-        let center = {x:centerX, y:centerY}
         this.svgCenter.x = centerX
         this.svgCenter.y = centerY
         this.hasCenter = true
