@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import gsap from 'gsap';
-import BaseHtmlEntity from './HtmlDecorator/BaseHtmlEntity';
-import { HtmlEntity } from './HtmlDecorator/HtmlEntity';
+import BaseSvgEntity from './HtmlDecorator/BaseSvgEntity';
+import MoveWithDrag from './HtmlDecorator/MoveWithDrag';
+import { SvgEntity } from './HtmlDecorator/SvgEntity';
 import TextInput from './HtmlDecorator/TextInput';
-import SVGTextManager from './SVGTextManager';
+import SvgTextManager from './HtmlObserver/SvgTextManager';
+
 
 
 const svgNS = "http://www.w3.org/2000/svg"
@@ -29,22 +31,24 @@ const svgNS = "http://www.w3.org/2000/svg"
 //     - apply data from textInputs to manipulate this <use>
 
 //     - Figure out if data can be added and retreived from <input/>
- 
+
+
+//https://res.cloudinary.com/dg9cqf9zn/image/upload/v1659473813/barrels2_1_mbrlo2.svg
 export class WindowAltComponent implements OnInit, AfterViewInit {
-  @ViewChild('svgref') svgRef!:ElementRef<HTMLElement>
-  @ViewChild('sprites') spriteDefs!: ElementRef<HTMLElement>
-  @ViewChild('urlinput') urlInput!:ElementRef<HTMLElement>
-  @ViewChild('urllist') urllist!:ElementRef<HTMLElement>
-  @ViewChild('xinput') positionInput!:ElementRef<HTMLElement>
-  @ViewChild('submit') submit!:ElementRef<HTMLElement>
+  @ViewChild('svgref') svgRef!:ElementRef<SVGSVGElement>
+  @ViewChild('sprites') spriteDefs!: ElementRef<SVGSVGElement>
+  @ViewChild('urlinput') urlInput!:ElementRef<SVGSVGElement>
+  @ViewChild('urllist') urllist!:ElementRef<SVGSVGElement>
+  @ViewChild('xinput') positionInput!:ElementRef<SVGSVGElement>
+  @ViewChild('submit') submit!:ElementRef<SVGSVGElement>
   idCounter:number = 0
   y = 100;
-  svgTextManager:SVGTextManager = new SVGTextManager()
-  currentImage:HTMLElement | null = null
+  svgTextManager:SvgTextManager = new SvgTextManager()
+  currentImage:SVGSVGElement | null = null
 
   constructor() {}
   ngAfterViewInit(): void {
-    let textInput:HtmlEntity = new BaseHtmlEntity(this.urlInput.nativeElement)
+    let textInput:SvgEntity = new BaseSvgEntity(this.urlInput.nativeElement)
     textInput = new TextInput(textInput, this.svgTextManager)
 
     textInput.getElement().addEventListener("click", (e:any)=>{
@@ -52,7 +56,7 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
     })
 
 
-    let xtextInput:HtmlEntity = new BaseHtmlEntity(this.positionInput.nativeElement)
+    let xtextInput:SvgEntity = new BaseSvgEntity(this.positionInput.nativeElement)
     xtextInput = new TextInput(xtextInput, this.svgTextManager)
 
     xtextInput.getElement().addEventListener("click", (e:any)=>{
@@ -86,23 +90,49 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
     //add <image> to <defs>
     this.spriteDefs.nativeElement.appendChild(image)
 
-
-    //create <use>
-    let useElement = document.createElementNS(svgNS, 'use')
-    let xposition = Number(this.positionInput.nativeElement.textContent)
-    let yPosition = Number(this.positionInput.nativeElement.textContent)
-    gsap.set(useElement, {attr:{id:"use" + this.idCounter, href:'#'+this.idCounter, x:xposition, y:yPosition}})
-
-
-
-    this.svgRef.nativeElement.appendChild(useElement)
-    this.idCounter += 1
+    this.addSVG()
 
     let urlText = document.createElementNS(svgNS, 'text')
     urlText.textContent = this.urlInput.nativeElement.textContent
     gsap.set(urlText, {attr:{x:20, y:this.y}})
     this.urllist.nativeElement.appendChild(urlText)
     this.y += 25
+
+  }
+
+
+  addSVG(){
+    
+    //create <use>
+    let useElement = document.createElementNS(svgNS, 'use')
+    gsap.set(useElement, {attr:{id:"use" + this.idCounter, href:'#'+this.idCounter}})
+
+    let xposition = Number(this.positionInput.nativeElement.textContent)
+    let yPosition = Number(this.positionInput.nativeElement.textContent)
+    let groupElement = document.createElementNS(svgNS, 'svg')
+    gsap.set(groupElement, {attr:{id:"svg" + this.idCounter, x:xposition, y:yPosition}})
+
+    groupElement.appendChild(useElement)
+
+    //Add Functionality:
+    let svgEntity:SvgEntity = new BaseSvgEntity(groupElement)
+    svgEntity = new MoveWithDrag(svgEntity, this.svgRef.nativeElement)
+
+
+    useElement.addEventListener("pointerdown", (e)=>{
+      svgEntity.drag(e)
+    })
+
+    useElement.addEventListener("pointermove", (e)=>{
+      svgEntity.drag(e)
+    })
+
+    useElement.addEventListener("pointerup", (e)=>{
+      svgEntity.drag(e)
+    })
+
+    this.svgRef.nativeElement.appendChild(groupElement)
+    this.idCounter += 1
 
   }
 

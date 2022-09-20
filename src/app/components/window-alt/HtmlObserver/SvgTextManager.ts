@@ -1,9 +1,8 @@
-import { HtmlEntity } from "./HtmlDecorator/HtmlEntity";
-import TextInput from "./HtmlDecorator/TextInput";
-import { Subject } from "./HtmlObserver/Subject";
-import { Subscriber } from "./HtmlObserver/Subscriber";
+import TextInput from "../HtmlDecorator/TextInput";
+import { Subject } from "./Subject";
+import { Subscriber } from "./Subscriber";
 
-class SVGTextManager implements Subject{
+class SvgTextManager implements Subject{
     selectedHtmlEntity:TextInput | null = null
     subscribers:Subscriber[] = []
     constructor(){
@@ -54,4 +53,4 @@ class SVGTextManager implements Subject{
    
 
 
-} export default SVGTextManager
+} export default SvgTextManager
