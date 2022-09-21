@@ -33,6 +33,7 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
   @ViewChild('submit') submit!:ElementRef<SVGSVGElement>
   idCounter:number = 0
   y = 100;
+  stateOne:boolean = true
   svgTextManager:SvgTextManager = new SvgTextManager()
   currentImage:SVGSVGElement | null = null
 
@@ -98,7 +99,12 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
     //add abilities
     let svgEntity:SvgEntity = new BaseSvgEntity(svgElement)
     svgEntity = new MoveWithDrag(svgEntity, this.svgRef.nativeElement)
-    svgEntity = new SnapWithDrag(svgEntity, [{x:25, y:25}, {x:450, y:25}, {x:25, y:450}, {x:450, y:450}], 100)
+    if (this.stateOne){
+      svgEntity = new SnapWithDrag(svgEntity, [{x:25, y:25}, {x:450, y:25}, {x:25, y:450}, {x:450, y:450}], 100)
+      this.stateOne = false
+    } else {
+      this.stateOne = true
+    }
 
 
 
