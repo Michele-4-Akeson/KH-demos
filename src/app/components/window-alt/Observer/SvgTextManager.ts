@@ -1,4 +1,4 @@
-import TextInput from "../HtmlDecorator/TextInput";
+import TextInput from "./TextInput";
 import { Subject } from "./Subject";
 import { Subscriber } from "./Subscriber";
 

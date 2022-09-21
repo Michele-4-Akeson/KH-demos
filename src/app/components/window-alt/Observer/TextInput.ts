@@ -1,8 +1,8 @@
 import gsap from "gsap";
-import { Subject } from "../HtmlObserver/Subject";
-import { Subscriber } from "../HtmlObserver/Subscriber";
-import HtmlDecorator from "./SvgAbility";
-import { SvgEntity } from "./SvgEntity";
+import { Subject } from "./Subject";
+import { Subscriber } from "./Subscriber";
+import HtmlDecorator from "../Decorator/SvgAbility";
+import { SvgEntity } from "../Decorator/SvgEntity";
 
 class TextInput extends HtmlDecorator implements Subscriber{
     isSelected:boolean = false
