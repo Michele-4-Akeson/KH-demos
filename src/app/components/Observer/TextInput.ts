@@ -1,14 +1,14 @@
 import gsap from "gsap";
 import { Subject } from "./Subject";
 import { Subscriber } from "./Subscriber";
-import HtmlDecorator from "../Decorator/SvgAbility";
-import { SvgEntity } from "../Decorator/SvgEntity";
+import HtmlDecorator from "../Decorator/SpriteAbility";
+import { Sprite } from "../Decorator/Sprite";
 
 class TextInput extends HtmlDecorator implements Subscriber{
     isSelected:boolean = false
     subject:Subject
     value:string = ""
-    constructor(htmlEntity:SvgEntity, subject:Subject){
+    constructor(htmlEntity:Sprite, subject:Subject){
         super(htmlEntity)
         this.subscribe(subject)
         this.subject = subject

@@ -1,0 +1,34 @@
+<svg #scene viewBox="0 0 700 200" width="100%" height="100%">
+    <defs>
+        <clipPath id="squareClip">
+            <!--
+            The clipPath is an element defined by the provided XML shape (in this case, the path element).
+            The clipPath element defines the region in which elements that use the clipPath, are visisble in,
+            otherwise, these elements are invisible
+
+            Note: Here we created a path element which defines the region, and we create another element with the exact same XML shape, position, etc...
+            and we animate them at the same time with the same stlye to give the effect that an object when over another reveals something underneath
+            -->
+
+            <rect #clip width="80" height="80" x="100" y="20"/>
+            <!--For every object that uses the clipPath, I think another of these shapes is generated => if applied to many, either create multiple clipPaths or apply a clipPath to a group-->
+        </clipPath>
+    </defs>
+
+    <image href="https://res.cloudinary.com/dg9cqf9zn/image/upload/v1659473813/barrels2_1_mbrlo2.svg" width="200" height="200"/>
+    <g clip-path="url(#squareClip)">
+        <image href="https://alphabetimals.com/wp-content/uploads/S1.png" width="200" height="200"/>
+    </g>
+
+  
+    
+    
+    
+
+
+
+
+
+
+</svg>
+  

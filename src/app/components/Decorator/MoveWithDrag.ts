@@ -1,17 +1,16 @@
 import gsap from "gsap";
-import SvgAbility from "./SvgAbility";
-import { SvgEntity } from "./SvgEntity";
+import SpriteAbility from "./SpriteAbility";
+import { Sprite } from "./Sprite";
 
-class MoveWithDrag extends SvgAbility{
-    svgParent:SVGSVGElement
+class MoveWithDrag extends SpriteAbility{
     svgPoint: DOMPoint
     isDragging:boolean = false
     hasCenter:boolean = false
     svgCenter = {x:0, y:0}
-    constructor(svgEntity:SvgEntity, svgParent:SVGSVGElement){
-        super(svgEntity)
-        this.svgParent = svgParent
-        this.svgPoint = svgParent.createSVGPoint()
+    constructor(sprite:Sprite){
+        super(sprite)
+        this.svgPoint = sprite.getParent().createSVGPoint()
+
 
 
     }
@@ -25,6 +24,7 @@ class MoveWithDrag extends SvgAbility{
     override drag(e:PointerEvent): void {
         switch(e.type){
             case "pointerdown":
+                console.log(this)
                 this.isDragging = true
                 this.dragByCenter(e)
                 break;
@@ -48,6 +48,9 @@ class MoveWithDrag extends SvgAbility{
     //////////////////////////////////////////////
     // HELPER FUNCTION
     //////////////////////////////////////////////
+
+
+
     /**
      * @param {PointerEvent} event the pointer event of the mouse touching the svg element
      * @returns returns the coordinates of the mouse within a given svg (relative to that svg)
@@ -57,7 +60,7 @@ class MoveWithDrag extends SvgAbility{
         this.svgPoint.y = event.clientY;
 
         // gets the coordinates of the mouse in a given svg relative to that svg
-        let svgMousePosition = this.svgPoint.matrixTransform(this.svgParent.getScreenCTM()!.inverse())
+        let svgMousePosition = this.svgPoint.matrixTransform(this.getParent().getScreenCTM()!.inverse())
         return svgMousePosition
     }
 
@@ -75,11 +78,14 @@ class MoveWithDrag extends SvgAbility{
     /**
      * calculates the center of the SVG element stored 
      * in the svgEntity
+     * 
+     * 
+     * getBBox() is only a method of SVGSVGElement
      */
     setCenterOfSVG(){
         let bbox = this.getElement().getBBox()
-        let centerX = bbox.x + bbox.width/2
-        let centerY = bbox.y + bbox.height/2 
+        let centerX = bbox.width/2
+        let centerY = bbox.height/2 
         this.svgCenter.x = centerX
         this.svgCenter.y = centerY
         this.hasCenter = true
@@ -95,6 +101,7 @@ class MoveWithDrag extends SvgAbility{
     dragByCenter(e:PointerEvent){
         if (!this.hasCenter) this.setCenterOfSVG()
         let touch = this.getMousePositionInSVG(e)
+        //console.log(this.svgCenter)
         this.setSVGPosition(touch.x - this.svgCenter.x, touch.y - this.svgCenter.y)
     }
     

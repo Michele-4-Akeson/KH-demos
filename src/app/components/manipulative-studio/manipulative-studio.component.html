@@ -1,0 +1,22 @@
+<!--The viewbox sets the view of the svg, but also repersents the width and height of the 
+    svg - x, y width, height => therefore, the placing objects at (x=700, y=200)
+    indicates that the element will be at the bottom right corner 
+
+    - therefore, in code, the position of our elements have to be relative to
+      these values
+-->
+<svg #scene viewBox="0 0 700 200" width="100%" height="100%">
+</svg>
+
+
+
+
+<form (ngSubmit)="onBarSubmit()">
+    <label>Bar Width</label>
+    <input type="number" name="barValue" [(ngModel)]="barValue"/>
+    <label>X:</label>
+    <input type="number" name="x" [(ngModel)]="x"/>
+    <label>Y:</label>
+    <input type="number" name="y" [(ngModel)]="y"/>
+    <input type="submit" value="Submit"/>
+</form>

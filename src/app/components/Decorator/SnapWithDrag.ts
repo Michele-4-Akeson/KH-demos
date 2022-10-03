@@ -1,6 +1,6 @@
 import gsap from "gsap";
-import SvgAbility from "./SvgAbility";
-import { SvgEntity } from "./SvgEntity";
+import SpriteAbility from "./SpriteAbility";
+import { Sprite } from "./Sprite";
 
 
 interface Point {
@@ -9,10 +9,10 @@ interface Point {
 }
 
 
-class SnapWithDrag extends SvgAbility{
+class SnapWithDrag extends SpriteAbility{
     points:Point[]
     threshold:number
-    constructor(svgEntity:SvgEntity, points:Point[], threshold:number){
+    constructor(svgEntity:Sprite, points:Point[], threshold:number){
         super(svgEntity)
         this.points = points
         this.threshold = threshold

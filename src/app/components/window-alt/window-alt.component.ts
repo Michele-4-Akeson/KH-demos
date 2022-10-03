@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import gsap from 'gsap';
-import BaseSvgEntity from './Decorator/BaseSvgEntity';
-import MoveWithDrag from './Decorator/MoveWithDrag';
-import { SvgEntity } from './Decorator/SvgEntity';
-import TextInput from './Observer/TextInput';
-import SvgTextManager from './Observer/SvgTextManager';
-import SnapWithDrag from './Decorator/SnapWithDrag';
+import BaseSprite from '../Decorator/BaseSprite';
+import MoveWithDrag from '../Decorator/MoveWithDrag';
+import { Sprite } from '../Decorator/Sprite';
+import TextInput from '../Observer/TextInput';
+import SvgTextManager from '../Observer/SvgTextManager';
+import SnapWithDrag from '../Decorator/SnapWithDrag';
 
 /**
  * Window-Alt: A proof of concept for dynamically injecting svg <image> and <use> tags
@@ -31,29 +31,25 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
   @ViewChild('urlinput') urlInput!:ElementRef<SVGSVGElement>
   @ViewChild('urllist') urllist!:ElementRef<SVGSVGElement>
   @ViewChild('submit') submit!:ElementRef<SVGSVGElement>
+  @ViewChild('snapinput') snapInput!:ElementRef<SVGSVGElement>
+  svgTextManager:SvgTextManager = new SvgTextManager()
   idCounter:number = 0
   y = 100;
-  stateOne:boolean = true
-  svgTextManager:SvgTextManager = new SvgTextManager()
-  currentImage:SVGSVGElement | null = null
-
   constructor() {}
 
+  //explore reducing reference passing in this pattern -try to stop passing svgEntity
+
   ngAfterViewInit(): void {
-    let textInput:SvgEntity = new BaseSvgEntity(this.urlInput.nativeElement)
+    let textInput:Sprite = new BaseSprite(this.urlInput.nativeElement, this.svgRef.nativeElement)
     textInput = new TextInput(textInput, this.svgTextManager)
 
     textInput.getElement().addEventListener("click", (e:any)=>{
       textInput.click()
     })
 
-
-
-
-    this.submit.nativeElement.addEventListener("click", (e:any)=>{
+    this.submit.nativeElement.addEventListener("click", (e)=>{
       this.addImage()
     })
-
 
   }
 
@@ -87,43 +83,41 @@ export class WindowAltComponent implements OnInit, AfterViewInit {
   }
 
 
+
+
   addSVG(){
     //create <use>
     let useElement = document.createElementNS(svgNS, 'use')
-    let svgElement = document.createElementNS(svgNS, 'svg')
     gsap.set(useElement, {attr:{id:"use" + this.idCounter, href:'#'+this.idCounter}})
-    gsap.set(svgElement, {attr:{id:"svg" + this.idCounter}})
-    svgElement.appendChild(useElement)
 
 
     //add abilities
-    let svgEntity:SvgEntity = new BaseSvgEntity(svgElement)
-    svgEntity = new MoveWithDrag(svgEntity, this.svgRef.nativeElement)
-    if (this.stateOne){
-      svgEntity = new SnapWithDrag(svgEntity, [{x:25, y:25}, {x:450, y:25}, {x:25, y:450}, {x:450, y:450}], 100)
-      this.stateOne = false
-    } else {
-      this.stateOne = true
-    }
+    let sprite:Sprite = new BaseSprite(useElement, this.svgRef.nativeElement)
+    sprite = new MoveWithDrag(sprite)
+    sprite = new SnapWithDrag(sprite, [{x:25, y:25}, {x:450, y:25}, {x:25, y:450}, {x:450, y:450}], 100)
+
 
 
 
     // add listeners
     useElement.addEventListener("pointerdown", (e)=>{
-      svgEntity.drag(e)
+      sprite.drag(e)
     })
 
     useElement.addEventListener("pointermove", (e)=>{
-      svgEntity.drag(e)
+      sprite.drag(e)
     })
 
     useElement.addEventListener("pointerup", (e)=>{
-      svgEntity.drag(e)
+      sprite.drag(e)
+    })
+
+    useElement.addEventListener("click", (e)=>{
+      console.log(sprite)
     })
 
 
-
-    this.svgRef.nativeElement.appendChild(svgElement)
+    this.svgRef.nativeElement.appendChild(useElement)
     this.idCounter += 1
 
   }

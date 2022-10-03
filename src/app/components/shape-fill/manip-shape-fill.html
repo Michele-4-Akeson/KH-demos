@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .withBackground { 
+        background-size: contain;
+        background-repeat: no-repeat;
+        height: 75vh;
+      }
+      </style>
+    <link href="../manipulatives.css" type="text/css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+    <script src="../gsap-shockingly-green/minified/MorphSVGPlugin.min.js"></script>
+    <script src="../api.js"></script>
+    <script src="manip-shape-fill.js"></script>
+  </head>
+  <div>
+  <svg viewBox = "0 0 500 500" class="withBackground" id="GSVG">
+    <path id="5"   d="M89.842,303.164L250,467.031L89.842,467.031L89.842,303.164Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="1"   d="M89.842,139.298L250,303.164L89.842,303.164L89.842,139.298Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="3"   d="M250,139.298L410.158,303.164L250,303.164L250,139.298Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="8"  d="M410.158,467.031L250,303.164L410.158,303.164L410.158,467.031Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="7"  d="M250,303.164L410.158,467.031L250,467.031L250,303.164Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="4"   d="M410.158,303.164L250,139.298L410.158,139.298L410.158,303.164Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="2"   d="M250,303.164L89.842,139.298L250,139.298L250,303.164Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path id="6"   d="M250,467.031L89.842,303.164L250,303.164L250,467.031Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r2" d="M86.919,29.481C86.919,29.189 86.682,28.952 86.39,28.952L33.088,28.952C32.796,28.952 32.559,29.189 32.559,29.481L32.559,81.304C32.559,81.596 32.796,81.833 33.088,81.833L86.39,81.833C86.682,81.833 86.919,81.596 86.919,81.304L86.919,29.481Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r4" d="M141.29,29.47C141.29,29.178 141.053,28.941 140.761,28.941L87.459,28.941C87.167,28.941 86.93,29.178 86.93,29.47L86.93,81.293C86.93,81.585 87.167,81.822 87.459,81.822L140.761,81.822C141.053,81.822 141.29,81.585 141.29,81.293L141.29,29.47Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r6" d="M195.65,29.47C195.65,29.178 195.413,28.941 195.121,28.941L141.819,28.941C141.527,28.941 141.29,29.178 141.29,29.47L141.29,81.293C141.29,81.585 141.527,81.822 141.819,81.822L195.121,81.822C195.413,81.822 195.65,81.585 195.65,81.293L195.65,29.47Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r8" d="M250.011,29.47C250.011,29.178 249.774,28.941 249.482,28.941L196.179,28.941C195.887,28.941 195.65,29.178 195.65,29.47L195.65,81.293C195.65,81.585 195.887,81.822 196.179,81.822L249.482,81.822C249.774,81.822 250.011,81.585 250.011,81.293L250.011,29.47Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r1" d="M304.381,29.458C304.381,29.167 304.144,28.93 303.852,28.93L250.55,28.93C250.258,28.93 250.021,29.167 250.021,29.458L250.021,81.281C250.021,81.573 250.258,81.81 250.55,81.81L303.852,81.81C304.144,81.81 304.381,81.573 304.381,81.281L304.381,29.458Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r3" d="M358.742,29.458C358.742,29.167 358.505,28.93 358.213,28.93L304.91,28.93C304.618,28.93 304.381,29.167 304.381,29.458L304.381,81.281C304.381,81.573 304.618,81.81 304.91,81.81L358.213,81.81C358.505,81.81 358.742,81.573 358.742,81.281L358.742,29.458Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r5" d="M413.102,29.47C413.102,29.178 412.865,28.941 412.573,28.941L359.27,28.941C358.978,28.941 358.742,29.178 358.742,29.47L358.742,81.293C358.742,81.585 358.978,81.822 359.27,81.822L412.573,81.822C412.865,81.822 413.102,81.585 413.102,81.293L413.102,29.47Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+    <path class = "hide" id = "r7" d="M467.462,29.47C467.462,29.178 467.225,28.941 466.933,28.941L413.631,28.941C413.339,28.941 413.102,29.178 413.102,29.47L413.102,81.293C413.102,81.585 413.339,81.822 413.631,81.822L466.933,81.822C467.225,81.822 467.462,81.585 467.462,81.293L467.462,29.47Z" style="fill:white;stroke:black;stroke-width:2.71px;"/>
+</svg>
+</div>
+  <body>
+    <script>
+
+      const state = {
+        width: 500,
+        height: 500
+      }
+
+      const el = document.getElementById("GSVG");
+      const manip = new manipShapeFill(el, state);  
+  
+    </script>
+  </body>
+</html>
