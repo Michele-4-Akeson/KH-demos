@@ -9,14 +9,20 @@
 </svg>
 
 
-
-
 <form (ngSubmit)="onBarSubmit()">
-    <label>Bar Width</label>
-    <input type="number" name="barValue" [(ngModel)]="barValue"/>
-    <label>X:</label>
-    <input type="number" name="x" [(ngModel)]="x"/>
-    <label>Y:</label>
-    <input type="number" name="y" [(ngModel)]="y"/>
-    <input type="submit" value="Submit"/>
+    <label>Bar-Width: {{barValue}}</label>
+    <mat-slider min="1" max="{{graphWidth}}" step="1" value="barValue" name="barValue" [(ngModel)]="barValue"></mat-slider>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>x position:</mat-label>
+        <input matInput type="number" name="x" [(ngModel)]="x"/>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>y position:</mat-label>
+        <input matInput type="number" name="y" [(ngModel)]="y"/>
+    </mat-form-field>
+
+    <button mat-raised-button  type="submit" color="primary">Add Bar</button>
 </form>
+
