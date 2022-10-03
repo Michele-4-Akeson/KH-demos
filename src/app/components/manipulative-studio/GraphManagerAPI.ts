@@ -101,6 +101,8 @@ class GraphManagerAPI{
         compositeBar.setBarPosition(x,y)
         this.scene.append(bar)
 
+        compositeBar.cut()
+
 
     }
     
