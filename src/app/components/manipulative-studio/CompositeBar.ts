@@ -27,6 +27,15 @@ class CompositeBar {
 
 
 
+    /**
+     * sets the width of each rect in the "bar element" by  
+     * checking where the element starts relative to the lines of the graph
+     * and where the element ends:
+     * 
+     * With this data, each rect is iterated over, and the width of that rect is
+     * set to be from it's start position to the minimum of either the end position 
+     * of the bar element, or the position of the next line in the graph
+     */
     cut(){
        let startX = this.getPositionOfElementInViewBox()
        let endX = startX + this.barWidth
@@ -63,6 +72,12 @@ class CompositeBar {
     
     }
 
+
+
+    /**
+     * @param x the x coordinate the bar will be placed
+     * @param y the y coordinate the bar will be placed
+     */
     setBarPosition(x:number, y:number){
         gsap.to(this.element, {x:x, y:y})
 
@@ -71,8 +86,7 @@ class CompositeBar {
 
 
     /**
-     * 
-     * @returns return the position of the element relative to the viewBox
+     * @returns return the position of the element's top left corner relative to the viewBox
      */
     getPositionOfElementInViewBox(){
         this.svgPoint.x = this.element.getBoundingClientRect().x

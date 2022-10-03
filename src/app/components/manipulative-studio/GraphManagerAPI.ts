@@ -31,6 +31,9 @@ class GraphManagerAPI{
     GRAPH METRICS
     */
 
+    /**
+     * @returns the absolute range of the graph (ex. if the graph is from -100 to 100, the range is 200)
+     */
     graphRange(){
         return Math.abs(this.min) + Math.abs(this.max)
     }
@@ -46,7 +49,10 @@ class GraphManagerAPI{
     ELEMENT CREATION
     */
 
-   
+   /**
+    * adds SVGLine elements to the svg parent based on the increment of the graph
+    * (ex. If the graph is from 0 to 100, and increments by 25, there is a line at: x=0, x=25, x=50, x=75, x=100) 
+    */
     addLines(){
         let numberOfLines = this.numberOfRects() + 2
         for (let i=0; i < numberOfLines && this.increment != 0; i+=1){
@@ -55,6 +61,31 @@ class GraphManagerAPI{
         
     }
 
+    /**
+     * creates an SVGLineElement and appends to the svg parent at the position, x
+     * @param x the position in pixels the line should be located in the graph
+     */
+    createLine(x:number){
+        let line:SVGLineElement = document.createElementNS(svgNS, "line")
+        gsap.set(line, {attr: {x1:x, y1:0, x2:x, y2:"100%", stroke:"black"}})
+        this.scene.append(line)
+        this.lines.push(line)
+
+    }
+
+
+    /**
+     * creates and adds a bar element to the svg parent at position (x, y), with 
+     * a pixel width equal to value
+     * 
+     * Note: the value in pixels doesn't need to be converted as it is relative to 
+     * the viewbox of the parent (if the viewBox="0, 0, 100, 200"), a value of 25 
+     * will be displayed as a quater of the graphs width as the width of the graph is 100
+     * 
+     * @param value the value of the bar (which corresponds to its width)
+     * @param x the x coordinate the bar will be placed
+     * @param y the y coordinate the bar will be placed
+     */
     addBar(value:number, x:number, y:number){
         let bar = document.createElementNS(svgNS, "g")
         for (let i = 0; i < this.numberOfRects(); i++){
@@ -73,13 +104,7 @@ class GraphManagerAPI{
 
     }
     
-    createLine(x:number){
-        let line:SVGLineElement = document.createElementNS(svgNS, "line")
-        gsap.set(line, {attr: {x1:x, y1:0, x2:x, y2:"100%", stroke:"black"}})
-        this.scene.append(line)
-        this.lines.push(line)
-
-    }
+    
 
 
 
@@ -97,6 +122,11 @@ class GraphManagerAPI{
     }
     */
 
+
+    /**
+     * @param x 
+     * @returns the x position of the closest line in the graph that is right of parameter, x
+     */
     getNextLine(x:number):number{
         for (let i = 0; i < this.lines.length; i++){
             if (x < this.lines[i].getBBox().x){
@@ -108,6 +138,12 @@ class GraphManagerAPI{
 
     }
 
+
+    /**
+     * 
+     * @param n the number of the rect in the bar element
+     * @returns a color for the fill of a rect based on its index in its <g> parent
+     */
     getColor(n:number):string{
         if (n % 3==0) return "blue"
         else if (n % 2 == 0) return "red" 
