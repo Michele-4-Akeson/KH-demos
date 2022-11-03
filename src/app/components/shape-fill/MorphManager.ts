@@ -1,5 +1,5 @@
-import Morphable from "../Decorator/Morphable";
-import { Sprite } from "../Decorator/Sprite";
+import Morphable from "../DD/Morphable";
+import { Sprite } from "../DD/Sprite";
 import { Subject } from "../Observer/Subject";
 import { Subscriber } from "../Observer/Subscriber";
 

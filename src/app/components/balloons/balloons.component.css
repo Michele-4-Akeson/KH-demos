@@ -1,0 +1,38 @@
+#background{
+    fill:rgb(99, 222, 253)
+}
+
+.grass{
+    fill:rgb(110, 218, 110)
+}
+#dirtLayer1{
+    fill:rgb(153, 93, 68)
+}
+
+#dirtLayer2{
+    fill:rgb(78, 45, 31)
+}
+
+#holeLayer1{
+    fill:rgb(75, 49, 37)
+}
+
+#holeLayer2{
+    fill:rgb(26, 14, 9)
+}
+
+#dirtCircle{
+    fill: rgba(63, 38, 28, 0.781);
+}
+
+.buttonContainer{
+    position:absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    margin-top: 20px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

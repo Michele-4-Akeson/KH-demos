@@ -9,6 +9,16 @@ class BaseSprite implements Sprite{
         this.parent = parent
     }
 
+
+    set(attribute:string, val:any){
+        this.element.setAttribute(attribute, val)
+    }
+
+    addToScene(scene:any){
+        scene.append(this.element)
+        this.parent = scene
+    }
+
     getElement(): SVGUseElement |SVGSVGElement {
         return this.element
     }

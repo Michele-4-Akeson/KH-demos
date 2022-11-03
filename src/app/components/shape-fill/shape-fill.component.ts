@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import BaseSprite from '../Decorator/BaseSprite';
-import Morphable from '../Decorator/Morphable';
-import { Sprite } from '../Decorator/Sprite';
+import BaseSprite from '../DD/BaseSprite';
+import Morphable from '../DD/Morphable';
+import { Sprite } from '../DD/Sprite';
 import MorphManager from './MorphManager';
 
 @Component({

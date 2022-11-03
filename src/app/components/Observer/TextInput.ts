@@ -1,8 +1,8 @@
 import gsap from "gsap";
 import { Subject } from "./Subject";
 import { Subscriber } from "./Subscriber";
-import HtmlDecorator from "../Decorator/SpriteAbility";
-import { Sprite } from "../Decorator/Sprite";
+import HtmlDecorator from "../DD/SpriteAbility";
+import { Sprite } from "../DD/Sprite";
 
 class TextInput extends HtmlDecorator implements Subscriber{
     isSelected:boolean = false

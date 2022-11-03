@@ -1,9 +1,11 @@
 import gsap from "gsap"
 import CompositeBar from "./CompositeBar"
+import ControlPoints from "./ControlPoints"
+
 
 const svgNS = "http://www.w3.org/2000/svg"
 
-class GraphManagerAPI{
+class GraphManager{
     scene: SVGSVGElement
     min:number = 0
     max:number = 0
@@ -13,6 +15,8 @@ class GraphManagerAPI{
     barHeight = 25
     lines:SVGLineElement[] = []
     bars:CompositeBar[] = []
+    controlPoints: ControlPoints
+    //resizeBar: ResizeBar
 
     constructor(scene:SVGSVGElement, graphWidth:number, graphHeight:number, min:number, max:number, increment:number){
         this.scene = scene
@@ -21,15 +25,98 @@ class GraphManagerAPI{
         this.width = graphWidth
         this.height = graphHeight
         this.increment = increment
+
+        //this.resizeBar = new ResizeBar(this, 100, 25)
+        //this.resizeBar.init()
+
+        this.controlPoints = new ControlPoints(this)
+        this.controlPoints.init()
+
+        
     }
 
 
- 
+    setMinMax(min:number, max:number){
+        this.min = min
+        this.max = max
+    }
+
+    setWidthHeight(width:number, height:number){
+        this.width = width
+        this.height = height
+
+        gsap.set(this.scene, {attr:{viewBox:`${0} ${0} ${this.width} ${this.height}`}})
+    }
+
+    setIncrement(increment:number){
+        if (increment == 0){
+            this.increment = 1
+        } else {
+            this.increment = increment
+        }
+        
+    }
+
+
+    /**
+     * when the graph changes size, updateLines is called
+     * to both reset the position of exsisting lines in the 
+     * graph and:
+     * 
+     * 1. Removes lines from the dom that are no longer within 
+     *    the graph view
+     * 
+     * 2. add new lines where not enough lines exsist to 
+     *    fill the graph view
+     */
+    updateLines(){
+        let newLines = this.numberOfRects() + 2
+        console.log(this.increment, newLines, this.lines.length)
+        if (newLines <= this.lines.length){
+            let i = 0
+            while (i < newLines){
+                let pos = i * this.increment
+                this.setLine(this.lines[i], pos)
+                
+                i++
+            }
+
+            while (i < this.lines.length){
+                this.lines[i].remove()
+                this.lines.splice(i, 1)
+            }
+
+            
+        
+        } else {
+            let i = 0
+            while (i < this.lines.length){
+                let pos = i * this.increment
+                this.setLine(this.lines[i], pos)
+                
+                i++
+            }
+
+            while (i < newLines){
+                let pos = i * this.increment
+                this.createLine(pos)
+                i++
+            }
+
+        }
+
+
+        this.cutAllBars()
+       
+    }
+
+
 
 
     /*
     GRAPH METRICS
     */
+
 
     /**
      * @returns the absolute range of the graph (ex. if the graph is from -100 to 100, the range is 200)
@@ -67,10 +154,15 @@ class GraphManagerAPI{
      */
     createLine(x:number){
         let line:SVGLineElement = document.createElementNS(svgNS, "line")
-        gsap.set(line, {attr: {x1:x, y1:0, x2:x, y2:"100%", stroke:"black"}})
+        this.setLine(line, x)
         this.scene.append(line)
         this.lines.push(line)
 
+    }
+
+
+    setLine(line:SVGLineElement, x:number){
+        gsap.set(line, {attr: {x1:x, y1:0, x2:x, y2:"100%", stroke:"black"}})
     }
 
 
@@ -87,35 +179,33 @@ class GraphManagerAPI{
      * @param y the y coordinate the bar will be placed
      */
     addBar(value:number, x:number, y:number){
-        let bar = document.createElementNS(svgNS, "g")
-        for (let i = 0; i < this.numberOfRects(); i++){
-            let rect = document.createElementNS(svgNS, "rect")
-            if (i == 0) gsap.set(rect, {attr:{width: value, height:this.barHeight, fill:this.getColor(i), rx:5}, strokeWidth:2, stroke:"white" })
-            else gsap.set(rect, {attr:{width: 0, height:this.barHeight, fill:this.getColor(i), rx:5}, strokeWidth:2, stroke:"white" })
-
-            bar.appendChild(rect)
-        }
-
-        let compositeBar = new CompositeBar(bar, value, this)
-        this.bars.push(compositeBar)
+        let compositeBar = new CompositeBar(value, this.barHeight, this)
+        compositeBar.init()
         compositeBar.setBarPosition(x,y)
-        this.scene.append(bar)
-
         compositeBar.cut()
-
-
+        
+        
+        this.bars.push(compositeBar)
+        this.controlPoints.setCompositeBar(compositeBar)
+        //this.resizeBar.setCompositeBar(compositeBar)
     }
-    
-    
 
 
+    /**
+     * calls cut on all compsite bar elements, spliting them between
+     * the lines of the graph
+     */
+    cutAllBars(){
+        for (let bar of this.bars){
+            bar.cut()
+        }
+    }
 
 
 
     /*
     HELPER FUNCTIONS
     */
-
 
 
     /*
@@ -158,4 +248,4 @@ class GraphManagerAPI{
 
 
 
-} export default GraphManagerAPI
+} export default GraphManager

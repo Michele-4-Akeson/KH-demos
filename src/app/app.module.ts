@@ -11,6 +11,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { TesterComponent } from './components/tester/tester.component';
+import { BalloonsComponent } from './components/balloons/balloons.component';
+
 
 @NgModule({
   declarations: [
@@ -18,7 +21,9 @@ import {MatButtonModule} from '@angular/material/button';
     WindowAltComponent,
     ShapeFillComponent,
     ManipulativeStudioComponent,
-    ClipTemplateComponent
+    ClipTemplateComponent,
+    TesterComponent,
+    BalloonsComponent,
   ],
   imports: [
     BrowserModule, 
@@ -27,7 +32,6 @@ import {MatButtonModule} from '@angular/material/button';
     MatSliderModule,
     MatInputModule,
     MatButtonModule
-
   ],
   providers: [],
   bootstrap: [AppComponent]

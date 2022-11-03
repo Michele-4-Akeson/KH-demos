@@ -71,6 +71,7 @@ class MoveWithDrag extends SpriteAbility{
      * @param {number} y the y coordinate the element will be moved to 
      */
     setSVGPosition(x:number, y:number){
+        
         gsap.set(this.getElement(), {attr:{x:x, y:y}})
     }
 

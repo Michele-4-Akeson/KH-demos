@@ -62,10 +62,6 @@ class SnapWithDrag extends SpriteAbility{
     }
 
 
-    /**
-     * @param {Point} point 
-     * @returns the distance of the svg Element to the given point, point 
-     */
     getDistance(point:Point):number{
         let currentPoint:Point = {x:Number(this.getElement().getAttribute("x")), y:Number(this.getElement().getAttribute("y"))}
         console.log(currentPoint)

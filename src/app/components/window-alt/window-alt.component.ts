@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import gsap from 'gsap';
-import BaseSprite from '../Decorator/BaseSprite';
-import MoveWithDrag from '../Decorator/MoveWithDrag';
-import { Sprite } from '../Decorator/Sprite';
+import BaseSprite from '../DD/BaseSprite';
+import MoveWithDrag from '../DD/MoveWithDrag';
+import { Sprite } from '../DD/Sprite';
 import TextInput from '../Observer/TextInput';
 import SvgTextManager from '../Observer/SvgTextManager';
-import SnapWithDrag from '../Decorator/SnapWithDrag';
+import SnapWithDrag from '../DD/SnapWithDrag';
 
 /**
  * Window-Alt: A proof of concept for dynamically injecting svg <image> and <use> tags
