@@ -32,33 +32,37 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 300, 150)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 100, 180)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1100, 200)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 10, 10)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1000, 50)
+    setTimeout(()=>{
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 300, 150)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 100, 180)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1100, 200)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 10, 10)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1000, 50)
+      
+
+      this.basket = new Drag(new Weight(AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)), 'y', null, null)
+      let basketBottom = Sprite.getBottomCenter(this.basket)
+
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 200, basketBottom[1] - 35)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 1100, basketBottom[1] - 35)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 25, basketBottom[1] + 80)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 50, basketBottom[1] + 120)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 80, basketBottom[1] + 20)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 40, basketBottom[1] + 200)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 65, basketBottom[1] + 80)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 45, basketBottom[1] + 100)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 75, basketBottom[1] + 190)
+
+
+      this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 25, basketBottom[1]), null, 720)
+      this.basket.addSprite(this.spring)
+      this.addEnvironment() // sets up the position of elements already in the dom
+      this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
+
+
+    }, 250)
     
-
-    this.basket = new Drag(new Weight(AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)), 'y', null, null)
-    let basketBottom = Sprite.getBottomCenter(this.basket)
-
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 200, basketBottom[1] - 35)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 1100, basketBottom[1] - 35)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 25, basketBottom[1] + 80)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 50, basketBottom[1] + 120)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 80, basketBottom[1] + 20)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 40, basketBottom[1] + 200)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 65, basketBottom[1] + 80)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 45, basketBottom[1] + 100)
-    AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 75, basketBottom[1] + 190)
-
-
-    this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 25, basketBottom[1]), null, 720)
-    this.basket.addSprite(this.spring)
-    this.addEnvironment() // sets up the position of elements already in the dom
-    this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
-
     
   }
 
@@ -96,7 +100,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 150), 1, ()=>{
     balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
-    balloon = new NumberDisplay(balloon, 1, -5, 0)
     balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
     this.basket!.addSprite(balloon)
     })
@@ -111,7 +114,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     sandBag.getPhysics().weight += this.weight
     sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
       sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
-      sandBag = new NumberDisplay(sandBag, -1, -8, 10)
       sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
       this.basket!.addSprite(sandBag)
     })
