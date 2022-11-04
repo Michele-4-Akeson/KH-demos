@@ -22,8 +22,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   basket:UseSprite | null = null
   spring:UseSprite | null = null
   weight:number = 65
-  canBalloon:boolean = true
-  canSandBag:boolean = true
+  canAdd:boolean = true
+  
 
 
   constructor() { }
@@ -97,31 +97,47 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
   addBalloon(){
-    let balloon = AssetManager.createSpriteFromId("redBalloon")
+    if (this.canAdd){
+      this.canAdd = false
+      let balloon = AssetManager.createSpriteFromId("redBalloon")
 
-    balloon.setParent(this.svgRef.nativeElement)
-    balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
-    balloon.getPhysics().weight -= this.weight
+      balloon.setParent(this.svgRef.nativeElement)
+      balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
+      balloon.getPhysics().weight -= this.weight
 
-    balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 150), 1, ()=>{
-    balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
-    balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
-    this.basket!.addSprite(balloon)
+      balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 150), 1, ()=>{
+      balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
+      balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
+      this.basket!.addSprite(balloon)
+
+      setTimeout(()=>this.canAdd = true, 750)
+
+    
     })
+
+    }
+    
 
   }
 
 
   addSandBag(){
-    let sandBag = AssetManager.createSpriteFromId("sandBag")
-    sandBag.setParent(this.svgRef.nativeElement)
-    sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
-    sandBag.getPhysics().weight += this.weight
-    sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
-      sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
-      sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
-      this.basket!.addSprite(sandBag)
-    })
+    if (this.canAdd){
+      this.canAdd = false
+      let sandBag = AssetManager.createSpriteFromId("sandBag")
+      sandBag.setParent(this.svgRef.nativeElement)
+      sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
+      sandBag.getPhysics().weight += this.weight
+      sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
+        sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
+        sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
+        this.basket!.addSprite(sandBag)
+      })
+
+      setTimeout(()=>this.canAdd = true, 750)
+
+    }
+   
   }
 
 
@@ -139,12 +155,12 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     if (distanceX > basket.element.getBBox().width/2){
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', -200, 1.2, ()=>{balloon.destroy()})
+      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
     }
 
     if (distanceY < 0){
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', -200, 1.2, ()=>{balloon.destroy()})
+      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
 
     }
 
@@ -160,12 +176,12 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     if (distanceX > basket.element.getBBox().width/2){
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', -200, 1.2, ()=>{sandBag.destroy()})
+      sandBag.moveWithAction('y', 720 -sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
     }
 
     if (distanceY > 0){
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', -200, 1.2, ()=>{sandBag.destroy()})
+      sandBag.moveWithAction('y', 720 - sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
 
     }
 

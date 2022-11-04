@@ -36,3 +36,13 @@
     flex-direction: column;
     gap: 20px;
 }
+
+button{
+    background: none;
+    border: none;
+    
+}
+
+button img{
+    width: 55px;
+}
