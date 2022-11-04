@@ -66,7 +66,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
 
 
-    }, 50)
+    }, 150)
     
     
   }
