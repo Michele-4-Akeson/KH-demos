@@ -102,7 +102,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       let balloon = AssetManager.createSpriteFromId("redBalloon")
 
       balloon.setParent(this.svgRef.nativeElement)
-      balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
+      balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
       balloon.getPhysics().weight -= this.weight
 
       balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 150), 1, ()=>{
@@ -126,7 +126,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.canAdd = false
       let sandBag = AssetManager.createSpriteFromId("sandBag")
       sandBag.setParent(this.svgRef.nativeElement)
-      sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 30)), 0)
+      sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
       sandBag.getPhysics().weight += this.weight
       sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
         sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
