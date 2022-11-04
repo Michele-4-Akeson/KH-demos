@@ -19,7 +19,7 @@ class AssetManager {
 
 
     /**
-     * adds an <image> to a <defs> element allowing for a <use> element to be generated from
+     * adds an image to a defs element allowing for a use element to be generated from
      * that image
      * 
      * @param defElement the <defs> element where the <image> will be added
@@ -69,6 +69,7 @@ class AssetManager {
         useSprite.setAttribute("href", "#" + id)
         let sprite = new Sprite(useSprite)
         sprite.setParent(parent)
+        
         sprite.setX(x, 0)
         sprite.setY(y, 0)
         

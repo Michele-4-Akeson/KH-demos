@@ -5,7 +5,6 @@ import Drag from 'src/KhDecorators/Decorators/Drag';
 import Weight from 'src/KhDecorators/Decorators/Weight';
 import UseSprite from 'src/KhDecorators/Pattern/UseSprite';
 import Sprite from 'src/KhDecorators/Pattern/Sprite';
-import NumberDisplay from 'src/KhDecorators/Decorators/NumberDisplay';
 import VerticalLine from 'src/KhDecorators/Decorators/VerticalLine';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
 
@@ -38,8 +37,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1100, 200)
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 10, 10)
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1000, 50)
-      
 
+
+
+
+      /**
+       * Issue is that bbox of basket is not set when trying to get it's position: bbox = {0, 0, 0, 0} so 
+       * when we use our methods that references the bbox, it doesn't do what we want it to
+       */
       this.basket = new Drag(new Weight(AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)), 'y', null, null)
       let basketBottom = Sprite.getBottomCenter(this.basket)
 
@@ -121,9 +126,11 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
 
+
+
+
+
   
-
-
   checkBalloon(balloon:UseSprite, basket:UseSprite){
     let balloonCenter = Sprite.getCenter(balloon)
     let basketCenter = Sprite.getTopCenter(basket)

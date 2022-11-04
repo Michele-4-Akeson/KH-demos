@@ -27,7 +27,7 @@ interface UseSprite {
      getX():number
 
      /**
-      * returns the y position of the spriet
+      * returns the y position of the sprite
       */
      getY():number
  
@@ -40,6 +40,10 @@ interface UseSprite {
     // SETTERS:
     ////////////////////////////////
 
+    /**
+     * sets the scale of the useSprite
+     * @param scale the scale the element will be set to
+     */
     setScale(scale:number):void
 
     /**
@@ -63,33 +67,36 @@ interface UseSprite {
 
 
     /**
-     * 
+     * moves the sprite horizontally by x from its current position
      * @param x the distance horizontally the sprite will move from its current location
      * @param duration the time over which that movement will occurr
      */
     moveX(x:number, duration:number):void
 
     /**
-     * 
+     * moves the sprite vertically by y from its current position
      * @param y the distance vertically the sprite will move from its current location
      * @param duration the time over which that movement will occurr
      */
     moveY(y:number, duration:number):void
 
     /**
+     * sets the x position of the sprite
      * @param x the x coordinate the sprite will be placed at
      * @param duration the time over which that movement will occurr
      */
     setX(x:number, duration:number):void
 
     /**
+     * sets the y position of the sprite
      * @param y the y coordinate the sprite will be placed at
      * @param duration the time over which that movement will occurr
      */
     setY(y:number, duration:number):void
 
     /**
-     * 
+     * moves the sprite in the direction ("x" or "y"), over a given duration from its
+     * current position; after the movement is complete, it executes the callback function
      * @param direction the direction the sprite will move
      * @param value the distance the sprite will move from its location
      * @param callback the function that will be called after completeion of this movement
@@ -101,9 +108,8 @@ interface UseSprite {
     
 
     /**
-     * removes the element referenced by the sprite from the dom
-     * and does the same for all useSprites in the attachedSprites
-     * field
+     * removes the element referenced by the sprite from the DOM
+     * and does the same for all useSprites attached to this sprite
      */
     destroy():void
     
