@@ -4,8 +4,7 @@ import UseSprite from "../Pattern/UseSprite";
 
 
 class Drag extends SpriteAbility{
-    dragRef:globalThis.Draggable[] = []
-
+    dragRef:globalThis.Draggable[]
     /**
      * adds a draggable functionality to the useSprite
      * @param useSprite the useSprite to be referenced
@@ -15,9 +14,6 @@ class Drag extends SpriteAbility{
      */
     constructor(useSprite:UseSprite, dragDirection:Draggable.DraggableType, whenDragging:Function|null, whenDragEnd:Function|null){
         super(useSprite)
-
-    
-
         gsap.registerPlugin(Draggable)
         this.dragRef = Draggable.create(this.element, {
             type:dragDirection,
@@ -38,6 +34,13 @@ class Drag extends SpriteAbility{
             }
         })
 
-
+        this.setDragRef(this.dragRef)
+      
     }
+
+
+    
+
+
+
 } export default Drag

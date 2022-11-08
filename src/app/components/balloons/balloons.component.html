@@ -7,7 +7,7 @@
       <image id="ruler" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887324/ruler_rvsnrf.svg" height="720"/>
       <image id="cloud" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887224/Cloud_qo9qcs.svg"/>
       <image id="bush" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887339/Grass_d1fwir.svg"/>
-      <image id="spring" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1667227249/spring_wf8vcj.svg" height="100"/>
+      <image id="spring" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1667921393/spring_oo5msr.svg" height="90"/>
       <circle id="dirtCircle" r="5"/>
 
 
@@ -31,7 +31,14 @@
 <div class="buttonContainer">
   <button (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg"/></button>
   <button (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg"/></button>
+  <button (click)="toggleRecording()">
+    <img *ngIf="!isRecording" src="https://www.pngmart.com/files/3/Play-Button-PNG-Pic.png"/>
+    <img *ngIf="isRecording" src="https://icons.iconarchive.com/icons/graphicloads/colorful-long-shadow/256/Button-2-pause-icon.png"/>
+  </button>
+  <p *ngIf="isRecording">{{output}}</p>
 </div>
+
+
   
   
 

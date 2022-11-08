@@ -14,6 +14,7 @@ class SpriteAbility implements UseSprite{
         this.parent = this.sprite.parent
 
     }
+ 
   
   
    
@@ -36,6 +37,22 @@ class SpriteAbility implements UseSprite{
     getAttachedSprites(): UseSprite[] {
         return this.sprite.getAttachedSprites()
     }
+
+    getIsDraggable(): boolean {
+        return this.sprite.getIsDraggable()
+    }
+    
+    setIsDraggable(canDrag: boolean): void {
+        this.sprite.setIsDraggable(canDrag)
+    }
+
+    getDragRef(): Draggable[] {
+        return this.sprite.getDragRef()
+    }
+    setDragRef(drag: Draggable[]): void {
+        this.sprite.setDragRef(drag)
+    }
+  
 
 
     getX():number{

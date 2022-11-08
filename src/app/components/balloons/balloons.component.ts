@@ -2,11 +2,11 @@ import { AfterContentInit, AfterViewInit, Component, ElementRef, OnInit, ViewChi
 import gsap from 'gsap';
 import AssetManager from 'src/KhDecorators/Pattern/AssetManager';
 import Drag from 'src/KhDecorators/Decorators/Drag';
-import Weight from 'src/KhDecorators/Decorators/Weight';
 import UseSprite from 'src/KhDecorators/Pattern/UseSprite';
 import Sprite from 'src/KhDecorators/Pattern/Sprite';
 import VerticalLine from 'src/KhDecorators/Decorators/VerticalLine';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
+import Weight from 'src/KhDecorators/Decorators/Weight';
 
 
 
@@ -22,7 +22,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   basket:UseSprite | null = null
   spring:UseSprite | null = null
   weight:number = 65
+  isRecording:boolean = false
   canAdd:boolean = true
+
+  currentValue:number = 0
+  outputOrder:string[] = ["start"]
+  outputValues = {start:0, balloonsAdded:0, balloonsRemoved:0, sandBagsAdded:0, sandBagsRemoved:0}
+  
+  output:string = ""
   
 
 
@@ -45,7 +52,9 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
        * Issue is that bbox of basket is not set when trying to get it's position: bbox = {0, 0, 0, 0} so 
        * when we use our methods that references the bbox, it doesn't do what we want it to
        */
-      this.basket = new Drag(new Weight(AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)), 'y', null, null)
+      this.basket = AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)
+      this.basket = new Weight(this.basket)
+      this.basket = new Drag(this.basket, 'y', null, null)
       let basketBottom = Sprite.getBottomCenter(this.basket)
 
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
@@ -60,7 +69,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 75, basketBottom[1] + 190)
 
 
-      this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 25, basketBottom[1]), null, 720)
+      this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom[1]), null, 720)
       this.basket.addSprite(this.spring)
       this.addEnvironment() // sets up the position of elements already in the dom
       this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
@@ -98,7 +107,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   addBalloon(){
     if (this.canAdd){
+      this.currentValue += 1
+      this.outputValues.balloonsAdded += 1
+      this.add(this.outputOrder, "balloonsAdded")
+      this.updateOutputValue()
+
       this.canAdd = false
+      this.basket?.setIsDraggable(false)
       let balloon = AssetManager.createSpriteFromId("redBalloon")
 
       balloon.setParent(this.svgRef.nativeElement)
@@ -109,8 +124,10 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
       balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
       this.basket!.addSprite(balloon)
-
-      setTimeout(()=>this.canAdd = true, 750)
+      setTimeout(()=>{
+        this.canAdd = true
+        this.basket?.setIsDraggable(true)
+      }, 750)
 
     
     })
@@ -123,18 +140,31 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   addSandBag(){
     if (this.canAdd){
+      this.currentValue -= 1
+      this.outputValues.sandBagsAdded += 1
+      this.add(this.outputOrder, "sandBagsAdded")
+      this.updateOutputValue()
+
       this.canAdd = false
+      this.basket?.setIsDraggable(false)
       let sandBag = AssetManager.createSpriteFromId("sandBag")
       sandBag.setParent(this.svgRef.nativeElement)
       sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
       sandBag.getPhysics().weight += this.weight
+      
+      
       sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
         sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
         sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
         this.basket!.addSprite(sandBag)
+        setTimeout(()=>{
+          this.canAdd = true
+          this.basket?.setIsDraggable(true)
+        }, 750)
+        
       })
 
-      setTimeout(()=>this.canAdd = true, 750)
+     
 
     }
    
@@ -154,15 +184,18 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     let distanceY = (basketCenter[1] - balloonCenter[1])
 
     if (distanceX > basket.element.getBBox().width/2){
+      this.outputValues.balloonsRemoved += 1
+      this.add(this.outputOrder, "balloonsRemoved")
+      this.basket!.removeSprite(balloon)
+      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
+    } else if (distanceY < 0){
+      this.add(this.outputOrder, "balloonsRemoved")
+      this.outputValues.balloonsRemoved += 1
       this.basket!.removeSprite(balloon)
       balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
     }
 
-    if (distanceY < 0){
-      this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
-
-    }
+    this.updateOutputValue()
 
   }
 
@@ -175,18 +208,79 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     let distanceY = (basketCenter[1] - bagCenter[1])
 
     if (distanceX > basket.element.getBBox().width/2){
+      this.outputValues.sandBagsRemoved += 1
+      this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
       sandBag.moveWithAction('y', 720 -sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
-    }
-
-    if (distanceY > 0){
+    } else if (distanceY > 0){
+      this.outputValues.sandBagsRemoved += 1
+      this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
       sandBag.moveWithAction('y', 720 - sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
-
     }
+
+    this.updateOutputValue()
 
   }
 
+
+
+
+
+
+  toggleRecording(){
+    this.isRecording=!this.isRecording
+    this.outputValues.balloonsAdded = 0
+    this.outputValues.balloonsRemoved = 0
+    this.outputValues.sandBagsAdded = 0
+    this.outputValues.sandBagsRemoved = 0
+    this.output = ""
+    this.outputOrder = ["start"]
+    this.outputValues.start = this.currentValue
+
+    this.updateOutputValue()
+  }
+
+  updateOutputValue(){
+    this.output = ""
+    for (let i = 0; i < Object.keys(this.outputValues).length; i++){
+      let value = this.outputOrder[i]
+      switch(value){
+        case "start":
+          this.output += this.signString(this.outputValues[value])
+          break
+        case "balloonsAdded":
+          this.output += "+" + this.signString(this.outputValues[value])
+          break
+        case "balloonsRemoved":
+          this.output += "-" + this.signString(this.outputValues[value])
+          break
+        case "sandBagsAdded":
+          this.output += "+" + this.signString(-this.outputValues[value])
+          break
+        case "sandBagsRemoved":
+          this.output += "-" + this.signString(-this.outputValues[value])
+          break
+
+      }
+    }
+  }
+
+  signString(n:number){
+    if (n < 0){
+      return `(${n})`
+    } else if (n > 0){
+      return `(+${n})`
+    } else {
+      return `${n}`
+    }
+  }
+
+  add(array:string[], s:string){
+    if (array.lastIndexOf(s) == -1){
+      array.push(s)
+    }
+  }
 
   
 

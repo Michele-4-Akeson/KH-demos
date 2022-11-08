@@ -37,12 +37,12 @@
     gap: 20px;
 }
 
-button{
+.buttonContainer button{
     background: none;
     border: none;
     
 }
 
-button img{
+.buttonContainer button img{
     width: 55px;
 }

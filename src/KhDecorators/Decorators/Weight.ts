@@ -7,6 +7,7 @@ class Weight extends SpriteAbility{
     currentX: number
     currentY: number
     /**
+     * NOTE: SHOULD ABSTRACT FUNCTIONALITY IN ANOTHER WAY
      * Weight adds the functionality that whenever a sprite
      * is attached to the current useSprite, it's position, and the position 
      * of all attached sprites in the y direction will change based on the weight 
@@ -26,9 +27,11 @@ class Weight extends SpriteAbility{
         }
     }
 
+   
     override onDragEnd(): void {
         let difference = this.currentY - this.getY()
-        this.moveY(difference, 1)
+        this.setIsDraggable(false)
+        this.moveWithAction('y', difference, 1, ()=>this.setIsDraggable(true))
         for (let sprite of this.getAttachedSprites()){
             sprite.moveY(difference, 1)
         }
@@ -54,8 +57,8 @@ class Weight extends SpriteAbility{
     adjustWeight(weight:number){
         let previousWeight = this.getPhysics().weight
         this.getPhysics().weight += weight
-
-        this.moveY(this.getPhysics().weight - previousWeight, 1)
+        this.setIsDraggable(false)
+        this.moveWithAction("y", this.getPhysics().weight - previousWeight, 1, ()=>this.setIsDraggable(true))
         this.currentY = this.currentY + this.getPhysics().weight - previousWeight
         for (let sprite of this.getAttachedSprites()){
             sprite.moveY(weight, 1)

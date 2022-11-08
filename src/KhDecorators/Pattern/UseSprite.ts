@@ -17,6 +17,30 @@ interface UseSprite {
     getPhysics():Physics
 
     /**
+     * returns isDraggable
+     */
+    getIsDraggable():boolean
+
+    /**
+     * returns the gsap draggable reference
+     * that allows us to control whether a drag is allowed
+     */
+    getDragRef():globalThis.Draggable[]
+
+
+    /**
+     * sets the dragRef to a gsap draggable of the useSprite
+     */
+    setDragRef(drag:globalThis.Draggable[]):void
+
+    /**
+     * sets the isDraggable field to canDrag, which 
+     * can be used to limit when a sprite is draggable
+     * @param canDrag the boolean isDraggable is set to
+     */
+    setIsDraggable(canDrag:boolean):void
+
+    /**
      * returns a list of sprites "attached" to this useSprite
      */
     getAttachedSprites():UseSprite[]

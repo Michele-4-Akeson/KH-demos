@@ -5,17 +5,16 @@ class Sprite implements UseSprite {
     element: SVGUseElement | SVGGElement | SVGSVGElement;
     parent: SVGSVGElement | null = null
     physics:Physics = new Physics()
+    isDraggable:boolean = true
+    dragRef:globalThis.Draggable[] = []
     attachedSprites:UseSprite[] = []
     
     constructor(svgUseElement:SVGUseElement){
         this.element = svgUseElement
        
     }
+ 
   
-  
-
-  
-
 
     ///////////////////////
     // GETTER
@@ -36,10 +35,31 @@ class Sprite implements UseSprite {
         return this.attachedSprites
     }
 
+    getIsDraggable(): boolean {
+        return this.isDraggable
+    }
+
+
+    setIsDraggable(canDrag: boolean): void {
+        this.isDraggable = canDrag
+        if (this.isDraggable){
+            this.dragRef[0].enable()
+        } else {
+            this.dragRef[0].disable()
+        }
+    }
 
     ///////////////////////
     // SETTERS
     ///////////////////////
+
+    getDragRef(): Draggable[] {
+        return this.dragRef
+    }
+
+    setDragRef(drag: Draggable[]): void {
+        this.dragRef = drag
+    }
 
     setScale(scale: number): void {
         gsap.set(this.element, {scale:scale})
