@@ -46,3 +46,20 @@
 .buttonContainer button img{
     width: 55px;
 }
+
+.record{
+    transform-origin: center;
+    background-color: aliceblue;
+    padding: 20px;
+    border-radius: 5px;
+    position: absolute;
+    font-size: 30px;
+    font-weight: bolder;
+    margin-left: 10px;
+    top: 0;
+
+}
+
+.hide{
+    display: none;
+}

@@ -19,6 +19,7 @@ import Weight from 'src/KhDecorators/Decorators/Weight';
 export class BalloonsComponent implements OnInit, AfterViewInit {
   @ViewChild('svgref') svgRef!:ElementRef
   @ViewChild('spritedef') spriteDefs!: ElementRef<SVGSVGElement>
+  @ViewChild('b') record!:ElementRef<HTMLParagraphElement>
   basket:UseSprite | null = null
   spring:UseSprite | null = null
   weight:number = 65
@@ -57,7 +58,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket = new Drag(this.basket, 'y', null, null)
       let basketBottom = Sprite.getBottomCenter(this.basket)
 
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
+      let ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 200, basketBottom[1] - 35)
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 1100, basketBottom[1] - 35)
       AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 25, basketBottom[1] + 80)
@@ -73,6 +74,9 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket.addSprite(this.spring)
       this.addEnvironment() // sets up the position of elements already in the dom
       this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
+      
+      gsap.set(this.record.nativeElement, {x:ruler.element.getBoundingClientRect().right})
+      this.moveEquation()
 
 
     }, 150)
@@ -127,6 +131,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       setTimeout(()=>{
         this.canAdd = true
         this.basket?.setIsDraggable(true)
+        this.moveEquation()
+
       }, 750)
 
     
@@ -160,6 +166,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
         setTimeout(()=>{
           this.canAdd = true
           this.basket?.setIsDraggable(true)
+          this.moveEquation()
+
         }, 750)
         
       })
@@ -185,14 +193,22 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     if (distanceX > basket.element.getBBox().width/2){
       this.outputValues.balloonsRemoved += 1
+      this.currentValue -= 1
       this.add(this.outputOrder, "balloonsRemoved")
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
+      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{
+        balloon.destroy()
+        this.moveEquation()
+      })
     } else if (distanceY < 0){
       this.add(this.outputOrder, "balloonsRemoved")
+      this.currentValue += 1
       this.outputValues.balloonsRemoved += 1
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{balloon.destroy()})
+      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{
+        balloon.destroy()
+        this.moveEquation()
+    })
     }
 
     this.updateOutputValue()
@@ -209,14 +225,22 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     if (distanceX > basket.element.getBBox().width/2){
       this.outputValues.sandBagsRemoved += 1
+      this.currentValue += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', 720 -sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
+      sandBag.moveWithAction('y', 720 -sandBag.getY(), 1.2, ()=>{
+        sandBag.destroy()
+        this.moveEquation()
+
+      })
     } else if (distanceY > 0){
+      this.currentValue += 1
       this.outputValues.sandBagsRemoved += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', 720 - sandBag.getY(), 1.2, ()=>{sandBag.destroy()})
+      sandBag.moveWithAction('y', 720 - sandBag.getY(), 1.2, ()=>{
+        sandBag.destroy()
+      })
     }
 
     this.updateOutputValue()
@@ -230,6 +254,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   toggleRecording(){
     this.isRecording=!this.isRecording
+
+    if (this.isRecording){
+      this.record.nativeElement.classList.remove("hide")
+    } else {
+      this.record.nativeElement.classList.add("hide")
+    }
+
     this.outputValues.balloonsAdded = 0
     this.outputValues.balloonsRemoved = 0
     this.outputValues.sandBagsAdded = 0
@@ -247,23 +278,23 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       let value = this.outputOrder[i]
       switch(value){
         case "start":
-          this.output += this.signString(this.outputValues[value])
+          this.output += " = " + this.signString(this.outputValues[value])
           break
         case "balloonsAdded":
-          this.output += "+" + this.signString(this.outputValues[value])
+          this.output += " + " + this.signString(this.outputValues[value])
           break
         case "balloonsRemoved":
-          this.output += "-" + this.signString(this.outputValues[value])
+          this.output += " - " + this.signString(this.outputValues[value])
           break
         case "sandBagsAdded":
-          this.output += "+" + this.signString(-this.outputValues[value])
+          this.output += " + " + this.signString(-this.outputValues[value])
           break
         case "sandBagsRemoved":
-          this.output += "-" + this.signString(-this.outputValues[value])
+          this.output += " - " + this.signString(-this.outputValues[value])
           break
-
       }
     }
+
   }
 
   signString(n:number){
@@ -280,6 +311,15 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     if (array.lastIndexOf(s) == -1){
       array.push(s)
     }
+  }
+
+
+  moveEquation(){
+    let height = this.record.nativeElement.getBoundingClientRect().height/2
+    console.log(height)
+    gsap.to(this.record.nativeElement, {y:this.basket!.element.getBoundingClientRect().bottom - height})
+
+
   }
 
   
