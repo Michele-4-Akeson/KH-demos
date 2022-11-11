@@ -7,6 +7,7 @@ import Sprite from 'src/KhDecorators/Pattern/Sprite';
 import VerticalLine from 'src/KhDecorators/Decorators/VerticalLine';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
 import Weight from 'src/KhDecorators/Decorators/Weight';
+import GroupText from './GroupText';
 
 
 
@@ -19,7 +20,7 @@ import Weight from 'src/KhDecorators/Decorators/Weight';
 export class BalloonsComponent implements OnInit, AfterViewInit {
   @ViewChild('svgref') svgRef!:ElementRef
   @ViewChild('spritedef') spriteDefs!: ElementRef<SVGSVGElement>
-  @ViewChild('b') record!:ElementRef<HTMLParagraphElement>
+
   @ViewChild('whiteline') whiteLine!:ElementRef<SVGLineElement>
   basket:UseSprite | null = null
   spring:UseSprite | null = null
@@ -29,6 +30,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   isRecording:boolean = false
   canAdd:boolean = true
   zoomValue = 0
+  recordText:GroupText|null = null
 
   currentValue:number = 0
   outputOrder:string[] = ["start"]
@@ -70,6 +72,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.moveEquation()
       this.zoomIn()
 
+      this.recordText = new GroupText(this.svgRef.nativeElement, 10, 10, "25px")
+    
 
     }, 450)
     
@@ -255,10 +259,11 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     if (this.isRecording){
       this.whiteLine.nativeElement.classList.remove("hide")
-      this.record.nativeElement.classList.remove("hide")
+      this.recordText!.group.classList.remove("hide")
     } else {
       this.whiteLine.nativeElement.classList.add("hide")
-      this.record.nativeElement.classList.add("hide")
+      this.recordText!.group.classList.add("hide")
+
     }
 
     this.outputValues.balloonsAdded = 0
@@ -295,6 +300,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       }
     }
 
+    this.recordText?.setText(this.output)
   }
 
   signString(n:number){
@@ -315,11 +321,10 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
   moveEquation(){
-    let height = this.record.nativeElement.getBoundingClientRect().height/1.5
-    console.log(height)
     let bottom = Sprite.getBottomCenter(this.basket!)[1]
-    gsap.to(this.record.nativeElement, {x:this.ruler!.element.getBoundingClientRect().right, y:this.basket!.element.getBoundingClientRect().bottom - height})
-    gsap.to(this.whiteLine.nativeElement, {attr:{y1:bottom - 10, y2:bottom - 10}})
+    let rulerRight = Sprite.getRight(this.ruler!)
+    this.recordText?.move(rulerRight, bottom)
+    gsap.to(this.whiteLine.nativeElement, {attr:{y1:bottom - 5, y2:bottom - 5}})
   }
 
 
@@ -327,9 +332,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     if (this.zoomValue < 4){
       AssetManager.zoomIn(this.svgRef.nativeElement)
       this.zoomValue += 1
-      if (this.isRecording){
-        this.toggleRecording()
-      }
+      
     }
   }
 
@@ -337,9 +340,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     if (this.zoomValue > 0){
       AssetManager.zoomOut(this.svgRef.nativeElement)
       this.zoomValue -= 1
-      if (this.isRecording){
-        this.toggleRecording()
-      }
+     
 
 
     }
