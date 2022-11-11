@@ -71,7 +71,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.zoomIn()
 
 
-    }, 150)
+    }, 450)
     
     
   }
