@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import gsap from 'gsap';
 import AssetManager from 'src/KhDecorators/Pattern/AssetManager';
 import Drag from 'src/KhDecorators/Decorators/Drag';
@@ -20,11 +20,15 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   @ViewChild('svgref') svgRef!:ElementRef
   @ViewChild('spritedef') spriteDefs!: ElementRef<SVGSVGElement>
   @ViewChild('b') record!:ElementRef<HTMLParagraphElement>
+  @ViewChild('whiteline') whiteLine!:ElementRef<SVGLineElement>
   basket:UseSprite | null = null
   spring:UseSprite | null = null
+  ruler:UseSprite | null = null
   weight:number = 65
+  line:UseSprite | null = null
   isRecording:boolean = false
   canAdd:boolean = true
+  zoomValue = 0
 
   currentValue:number = 0
   outputOrder:string[] = ["start"]
@@ -40,14 +44,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(()=>{
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 300, 150)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 100, 180)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1100, 200)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 10, 10)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "cloud", 1000, 50)
-
-
-
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "cloud", 15, -1220, 150, 4000, -1400, 1.5)
 
       /**
        * Issue is that bbox of basket is not set when trying to get it's position: bbox = {0, 0, 0, 0} so 
@@ -58,25 +55,20 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket = new Drag(this.basket, 'y', null, null)
       let basketBottom = Sprite.getBottomCenter(this.basket)
 
-      let ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 200, basketBottom[1] - 35)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "bush", 1100, basketBottom[1] - 35)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 25, basketBottom[1] + 80)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 50, basketBottom[1] + 120)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 80, basketBottom[1] + 20)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 40, basketBottom[1] + 200)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 65, basketBottom[1] + 80)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] + 45, basketBottom[1] + 100)
-      AssetManager.createSpriteIn(this.svgRef.nativeElement, "dirtCircle", basketBottom[0] - 75, basketBottom[1] + 190)
-
+      this.ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", Sprite.getRight(this.basket), 0)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, this.basket.getX() - 800, basketBottom[1] - 35, 700, 0, null)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, Sprite.getRight(this.basket) + 200, basketBottom[1] - 35, 700, 0, null)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "dirtCircle", 8, this.basket.getX() + 10, basketBottom[1], this.basket.element.getBBox().width - 20, 350, 1.2)
+      
 
       this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom[1]), null, 720)
+      this.spring.element.setAttribute("transform-origin", "bottom")
       this.basket.addSprite(this.spring)
       this.addEnvironment() // sets up the position of elements already in the dom
       this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
       
-      gsap.set(this.record.nativeElement, {x:ruler.element.getBoundingClientRect().right})
       this.moveEquation()
+      this.zoomIn()
 
 
     }, 150)
@@ -90,7 +82,9 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     let grassLeft = document.getElementById("grassLeft")
     let grassRight = document.getElementById("grassRight")
-    gsap.set(grassLeft, {y:basketBottom[1] - 10, attr:{width:this.basket!.getX()}})
+
+
+    gsap.set(grassLeft, {y:basketBottom[1] - 10})
     gsap.set(grassRight, {x:Sprite.getRight(this.basket!), y:basketBottom[1] - 10, attr:{width:"100%"}})
 
     let dirtLayer1 = document.getElementById("dirtLayer1")
@@ -124,7 +118,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
       balloon.getPhysics().weight -= this.weight
 
-      balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 150), 1, ()=>{
+      balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 50), 1, ()=>{
       balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
       balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
       this.basket!.addSprite(balloon)
@@ -146,12 +140,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   addSandBag(){
     if (this.canAdd){
+      this.canAdd = false
+
       this.currentValue -= 1
       this.outputValues.sandBagsAdded += 1
       this.add(this.outputOrder, "sandBagsAdded")
       this.updateOutputValue()
 
-      this.canAdd = false
       this.basket?.setIsDraggable(false)
       let sandBag = AssetManager.createSpriteFromId("sandBag")
       sandBag.setParent(this.svgRef.nativeElement)
@@ -196,16 +191,17 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue -= 1
       this.add(this.outputOrder, "balloonsRemoved")
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{
+      balloon.moveWithAction('y', balloon.getY() - 200, 1.2, ()=>{
         balloon.destroy()
         this.moveEquation()
       })
+
     } else if (distanceY < 0){
       this.add(this.outputOrder, "balloonsRemoved")
       this.currentValue += 1
       this.outputValues.balloonsRemoved += 1
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', 0 - balloon.getY(), 1.2, ()=>{
+      balloon.moveWithAction('y', balloon.getY() - 200, 1.2, ()=>{
         balloon.destroy()
         this.moveEquation()
     })
@@ -228,17 +224,18 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', 720 -sandBag.getY(), 1.2, ()=>{
+      sandBag.moveWithAction('y', sandBag.getY() + 100, 1.2, ()=>{
         sandBag.destroy()
         this.moveEquation()
 
       })
+
     } else if (distanceY > 0){
       this.currentValue += 1
       this.outputValues.sandBagsRemoved += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', 720 - sandBag.getY(), 1.2, ()=>{
+      sandBag.moveWithAction('y', sandBag.getY() + 100, 1.2, ()=>{
         sandBag.destroy()
       })
     }
@@ -254,10 +251,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   toggleRecording(){
     this.isRecording=!this.isRecording
+    this.moveEquation()
 
     if (this.isRecording){
+      this.whiteLine.nativeElement.classList.remove("hide")
       this.record.nativeElement.classList.remove("hide")
     } else {
+      this.whiteLine.nativeElement.classList.add("hide")
       this.record.nativeElement.classList.add("hide")
     }
 
@@ -315,13 +315,35 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
   moveEquation(){
-    let height = this.record.nativeElement.getBoundingClientRect().height/2
+    let height = this.record.nativeElement.getBoundingClientRect().height/1.5
     console.log(height)
-    gsap.to(this.record.nativeElement, {y:this.basket!.element.getBoundingClientRect().bottom - height})
-
-
+    let bottom = Sprite.getBottomCenter(this.basket!)[1]
+    gsap.to(this.record.nativeElement, {x:this.ruler!.element.getBoundingClientRect().right, y:this.basket!.element.getBoundingClientRect().bottom - height})
+    gsap.to(this.whiteLine.nativeElement, {attr:{y1:bottom - 10, y2:bottom - 10}})
   }
 
+
+  zoomIn(){
+    if (this.zoomValue < 4){
+      AssetManager.zoomIn(this.svgRef.nativeElement)
+      this.zoomValue += 1
+      if (this.isRecording){
+        this.toggleRecording()
+      }
+    }
+  }
+
+  zoomOut(){
+    if (this.zoomValue > 0){
+      AssetManager.zoomOut(this.svgRef.nativeElement)
+      this.zoomValue -= 1
+      if (this.isRecording){
+        this.toggleRecording()
+      }
+
+
+    }
+  }
   
 
   ngOnInit(): void {

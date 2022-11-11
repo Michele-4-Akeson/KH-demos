@@ -1,5 +1,15 @@
+
+
+.scene{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    
+}
+
 #background{
-    fill:rgb(99, 222, 253)
+    fill:rgb(99, 222, 253);
+   
 }
 
 .grass{

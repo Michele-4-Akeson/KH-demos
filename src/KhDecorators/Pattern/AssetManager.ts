@@ -78,15 +78,39 @@ class AssetManager {
         
     }
 
+    static createSpritesInRange(parent:SVGSVGElement, id:string, count:number, startX:number, startY:number, rangeX:number, rangeY:number, scaleRange:number|null):void{
+        let positions:number[][] = []
+
+        while (count > 0){
+            let randomX = startX + Math.random() * rangeX
+            let randomY = startY + Math.random() * rangeY
+
+            // if not already in positions array, add
+            if (positions.indexOf([randomX, randomY]) == -1){
+                positions.push([randomX, randomY])
+                let sprite = this.createSpriteIn(parent, id, randomX, randomY)
+                if (scaleRange){
+                    let randomScale = (Math.random() + 1) * scaleRange
+                    sprite.setScale(randomScale)
+                } 
+
+                count -= 1
+
+            } else {
+                continue
+            }
+        }
+    }
+
 
 
     /**
      * adds an image with id equal to idCount - sprites can now be created to reference 
      * this image element either implictly, or explicitly by using the id number
-     * @param defElement the <defs> element where the <image> will be added
-     * @param url the url of the <image> to be added
-     * @param width the width of the <image>
-     * @param height the height of the <image>
+     * @param defElement the defs element where the image will be added
+     * @param url the url of the image to be added
+     * @param width the width of the image
+     * @param height the height of the image
      */
     static addImage(defElement:SVGDefsElement, url:string, width:number, height:number){
         this.idCount += 1
@@ -95,6 +119,28 @@ class AssetManager {
         //add <image> to <defs> 
         defElement.append(image)
     }
+
+    static zoomIn(parentSVG:SVGSVGElement){
+        let viewBox = parentSVG.viewBox["baseVal"]
+        let x = viewBox.x + viewBox.width / 4;
+        let y = viewBox.y + viewBox.height / 4;
+        let width = viewBox.width / 2;
+        let height = viewBox.height / 2;
+
+        gsap.to(parentSVG, { attr: { viewBox: `${x} ${y} ${width} ${height}` } });
+    }
+
+    static zoomOut(parentSVG:SVGSVGElement){
+        let viewBox = parentSVG.viewBox["baseVal"]
+        let x = viewBox.x - viewBox.width / 2;
+        let y = viewBox.y - viewBox.height / 2;
+        let width = viewBox.width * 2;
+        let height = viewBox.height * 2;
+
+        gsap.to(parentSVG, { attr: { viewBox: `${x} ${y} ${width} ${height}` } });
+
+    }
+   
 
 
     
