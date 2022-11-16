@@ -42,31 +42,43 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   constructor() { }
 
-  /*
-  bbox of basket isn't initalized, thus the width and height are 0; quick fix was to use 
-  a timeout and then execute code
-  */
   ngAfterViewInit(): void {
     setTimeout(()=>{
+
+      // creates an adds basket UseSprite at position (600, 270) in the svg element
       this.basket = AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)
+      // adds functionality such that when basket moves, all attached sprites move with it
       this.basket = new MoveWithChildren(this.basket)
+      // adds functionality such that when the basket is dragged, all attached sprites move with the drag 
       this.basket = new DragWithChildren(this.basket)
+      // adds the functionality of being able to drag the basket in the y axis
       this.basket = new Drag(this.basket, 'y', null, null)
 
-      let basketBottom = Sprite.getBottomCenter(this.basket)[1]
-      let basketRight = Sprite.getRight(this.basket)
+      // the y position of the bottom of the basket useSprite
+      const basketBottom = Sprite.getBottomCenter(this.basket)[1]
+      const basketRight = Sprite.getRight(this.basket)
 
+
+
+      // Addition of scene decorations (clouds, bushes, dirt) at random positions in a defined range
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "cloud", 15, -1220, 4000, 150, -1400, 1.5)
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, this.basket.getX() - 800, 700, basketBottom - 35, 0, null)
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, basketRight + 200, 700, basketBottom - 35, 0, null)
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "dirtCircle", 8, this.basket.getX() + 10, this.basket.element.getBBox().width - 20, basketBottom, 350, 1.2)
+
+
+      // creates the ruler useSprite at the position which is just right of the basket useSprite
       this.ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", basketRight, 0)
-
-
-      this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom), null, 720)
+      // creates the spring useSprite with strechable functionality such that it is streched in along the y-axis from the point, 720, inthe svg
+      this.spring = AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom)
+      this.spring = new Strechable(this.spring, null, 720)
       this.basket.addSprite(this.spring)
-      this.addEnvironment() // sets up the position of elements already in the dom
-      this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
+
+
+ 
+
+      //reappends the basket to the svg element such that visually in front of all other elements in that svg
+      this.basket.setParent(this.svgRef.nativeElement)
       
       this.zoomIn()
 
@@ -75,84 +87,62 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       gsap.set(this.recordText.group, {y:basketBottom, x:Sprite.getRight(this.ruler)})
       this.moveEquationLine()
     
-
     }, 450)
     
     
   }
 
 
-  addEnvironment(){
-    let basketBottom = Sprite.getBottomCenter(this.basket!)
 
-    let grassLeft = document.getElementById("grassLeft")
-    let grassRight = document.getElementById("grassRight")
-
-
-    gsap.set(grassLeft, {y:basketBottom[1] - 10})
-    gsap.set(grassRight, {x:Sprite.getRight(this.basket!), y:basketBottom[1] - 10, attr:{width:"100%"}})
-
-    let dirtLayer1 = document.getElementById("dirtLayer1")
-    let dirtLayer2 = document.getElementById("dirtLayer2")
-
-    gsap.set(dirtLayer1, {y:basketBottom[1]})
-    let layer2Y = Number(gsap.getProperty(dirtLayer1, "y")) + Number(gsap.getProperty(dirtLayer1, "height"))
-    gsap.set(dirtLayer2, {y:layer2Y})
-
-    let holeLayer1 = document.getElementById("holeLayer1")
-    let holeLayer2 = document.getElementById("holeLayer2")
-
-    gsap.set(holeLayer1, {x:this.basket?.getX(), y:basketBottom[1], attr:{width:this.basket!.element.getBBox().width}})
-    gsap.set(holeLayer2, {x:this.basket?.getX(), y:layer2Y, attr:{width:this.basket!.element.getBBox().width}})
-    
-  }
-
-
+  /**
+   * adds a balloon to the basket useSprite when the balloon button is clicked.
+   * When a balloon is added, the basket, and all attached sprites will move upwards
+   * by increment  
+   */
   addBalloon(){
     if (this.canAdd){
+      //disables the ability to add more than one a balloon at a time
       this.canAdd = false
+      //increments the current value the basket has relative to the ruler/equation
       this.currentValue += 1
       this.outputValues.balloonsAdded += 1
-      this.add(this.outputOrder, "balloonsAdded")
+      this.addToOrder(this.outputOrder, "balloonsAdded")
       this.updateOutputValue()
 
+      //disbales drag while balloon is moving basket upwards
       this.basket?.getDraggable()[0].disable()
       let balloon = AssetManager.createSpriteFromId("redBalloon")
 
+      //adds balloon to svg element at a random position both above the basket, and within it left and right side
       balloon.setParent(this.svgRef.nativeElement)
       balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
 
+      //after the balloon has reached its location, the vertical line and draggable functionality is added 
       balloon.callAfterMove("y", this.basket!.getY() - 100 - (Math.random() * 50), 1, ()=>{
-      balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
-      balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
-      this.basket!.addSprite(balloon)
+        balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
+        balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon)) 
+        this.basket!.addSprite(balloon)
 
+        // basket is moved upwards
+        this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+          this.moveEquationLine()
+        
+        })
 
+        // after a period of time, the user can add another balloon and drag the basket
+        setTimeout(()=>{
+          this.canAdd = true
+          this.basket?.getDraggable()[0].enable()
 
-      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
-        this.moveEquationLine()
-      
-      })
-
-
-
-
-      setTimeout(()=>{
-        this.canAdd = true
-        this.basket?.getDraggable()[0].enable()
-
-      }, 750)
+        }, 750)
 
     
     })
 
     }
     
-
   }
 
-
-  
 
  
 
@@ -162,7 +152,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
       this.currentValue -= 1
       this.outputValues.sandBagsAdded += 1
-      this.add(this.outputOrder, "sandBagsAdded")
+      this.addToOrder(this.outputOrder, "sandBagsAdded")
       this.updateOutputValue()
 
       this.basket?.getDraggable()[0].disable()
@@ -173,7 +163,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       
       sandBag.callAfterMove('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
         sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
-        sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
+        sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag))
         this.basket!.addSprite(sandBag)
         this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
           this.moveEquationLine()
@@ -194,41 +184,40 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   }
 
 
-  
-  checkBalloon(balloon:UseSprite, basket:UseSprite){
+  /**
+   * Checks if a balloon useSprite was moved far enough from the basket to be removed
+   * from the scene, resulting in the basket and its attached sprites changing position 
+   * 
+   * @param balloon the useSprite balloon being checked to see if it was moved to 
+   * far enough from the basket to be "removed" from the basekt
+   */
+  checkBalloon(balloon:UseSprite){
+    // retrieves the center (x,y) of the basket
     let balloonCenter = Sprite.getCenter(balloon)
-    let basketCenter = Sprite.getTopCenter(basket)
+    // retireves the top center point of the basket
+    let basketCenter = Sprite.getTopCenter(this.basket!)
+
     let distanceX = Math.abs(basketCenter[0] - balloonCenter[0])
     let distanceY = (basketCenter[1] - balloonCenter[1])
 
-    if (distanceX > basket.element.getBBox().width/2){
-      this.outputValues.balloonsRemoved += 1
+    // checks to see if the distance between the balloon and the basket results in removal of the balloon
+    if (distanceX > this.basket!.element.getBBox().width/2 || distanceY < 0){
       this.currentValue -= 1
-      this.add(this.outputOrder, "balloonsRemoved")
-      this.basket!.removeSprite(balloon)
-      balloon.callAfterMove('y', balloon.getY() - 200, 1.2, ()=>{
-        balloon.destroy()
-      })
-
-      this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
-        this.moveEquationLine()
-      })
-
-    } else if (distanceY < 0){
-      this.add(this.outputOrder, "balloonsRemoved")
-      this.currentValue += 1
       this.outputValues.balloonsRemoved += 1
-      this.basket!.removeSprite(balloon)
+      this.addToOrder(this.outputOrder, "balloonsRemoved")
+      this.basket?.removeSprite(balloon)
+
+      // destroys the balloon after moving it upwards from it's current position
       balloon.callAfterMove('y', balloon.getY() - 200, 1.2, ()=>{
         balloon.destroy()
       })
 
+      // basket is moved downwards along with all attached sprites and the equation/line
       this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
         this.moveEquationLine()
       })
 
-
-    }
+    } 
 
     this.updateOutputValue()
 
@@ -236,29 +225,17 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
 
-  checkSandBag(sandBag:UseSprite, basket:UseSprite){
+
+  checkSandBag(sandBag:UseSprite){
     let bagCenter = Sprite.getCenter(sandBag)
-    let basketCenter = Sprite.getTopCenter(basket)
+    let basketCenter = Sprite.getTopCenter(this.basket!)
     let distanceX = Math.abs(basketCenter[0] - bagCenter[0])
     let distanceY = (basketCenter[1] - bagCenter[1])
 
-    if (distanceX > basket.element.getBBox().width/2){
+    if (distanceX > this.basket!.element.getBBox().width/2 || distanceY > 0){
       this.outputValues.sandBagsRemoved += 1
       this.currentValue += 1
-      this.add(this.outputOrder, "sandBagsRemoved")
-      this.basket!.removeSprite(sandBag)
-      sandBag.callAfterMove('y', sandBag.getY() + 100, 1.2, ()=>{
-        sandBag.destroy()
-      })
-
-      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
-        this.moveEquationLine()
-      })
-
-    } else if (distanceY > 0){
-      this.currentValue += 1
-      this.outputValues.sandBagsRemoved += 1
-      this.add(this.outputOrder, "sandBagsRemoved")
+      this.addToOrder(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
       sandBag.callAfterMove('y', sandBag.getY() + 100, 1.2, ()=>{
         sandBag.destroy()
@@ -269,12 +246,18 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       })
     }
 
+
     this.updateOutputValue()
 
   }
 
 
 
+  /**
+   * toggles the visibility of the dashed white line and equation of the basket.
+   * Resets the equation such that the first term of the equation is the current value
+   * of the basket 
+   */
   toggleRecording(){
     this.isRecording=!this.isRecording
 
@@ -298,6 +281,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     this.updateOutputValue()
   }
 
+
+
+  /**
+   * updates the output of the equation's text such that the addtion 
+   * of balloons, and sandbags, and their removal are displayed in the
+   * equation in the order that balloons and baskets are added or removed
+   */
   updateOutputValue(){
     this.output = ""
     for (let i = 0; i < Object.keys(this.outputValues).length; i++){
@@ -324,17 +314,21 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     this.recordText?.setText(this.output)
   }
 
+  /**
+   * 
+   * @param n the value of the number being converted to a signed string
+   * @returns return n if n <= 0, "+n" if n > 0
+   */
   signString(n:number){
-    if (n < 0){
+    if (n <= 0){
       return `${n}`
-    } else if (n > 0){
-      return `+${n}`
+
     } else {
-      return `${n}`
+      return `+${n}`
     }
   }
 
-  add(array:string[], s:string){
+  addToOrder(array:string[], s:string){
     if (array.lastIndexOf(s) == -1){
       array.push(s)
     }
