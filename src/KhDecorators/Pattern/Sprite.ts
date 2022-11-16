@@ -1,10 +1,8 @@
 import gsap from "gsap";
-import Physics from "../Components/Physics";
 import UseSprite from "./UseSprite";
 class Sprite implements UseSprite {
     element: SVGUseElement | SVGGElement | SVGSVGElement;
     parent: SVGSVGElement | null = null
-    physics:Physics = new Physics()
     isDraggable:boolean = true
     dragRef:globalThis.Draggable[] = []
     attachedSprites:UseSprite[] = []
@@ -29,9 +27,6 @@ class Sprite implements UseSprite {
         return gsap.getProperty(this.element, "y") as number
     }
 
-    getPhysics(): Physics {
-        return this.physics
-    }
 
     getAttachedSprites(): UseSprite[] {
         return this.attachedSprites
@@ -55,11 +50,11 @@ class Sprite implements UseSprite {
     // SETTERS
     ///////////////////////
 
-    getDragRef(): Draggable[] {
+    getDraggable(): Draggable[] {
         return this.dragRef
     }
 
-    setDragRef(drag: Draggable[]): void {
+    setDraggable(drag: Draggable[]): void {
         this.dragRef = drag
     }
 

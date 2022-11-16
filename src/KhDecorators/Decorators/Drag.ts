@@ -34,7 +34,7 @@ class Drag extends SpriteAbility{
             }
         })
 
-        this.setDragRef(this.dragRef)
+        this.setDraggable(this.dragRef)
       
     }
 

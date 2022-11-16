@@ -1,5 +1,4 @@
 import gsap from "gsap";
-import Physics from "../Components/Physics";
 import UseSprite from "./UseSprite";
 
 
@@ -31,40 +30,33 @@ class SpriteAbility implements UseSprite{
     /////////////////////////////////
     // GETTERS
     /////////////////////////////////
-    getPhysics(): Physics {
-        return this.sprite.getPhysics()
-    }
 
-    getAttachedSprites(): UseSprite[] {
-        return this.sprite.getAttachedSprites()
-    }
-
-    getIsDraggable(): boolean {
-        return this.sprite.getIsDraggable()
-    }
     
-    setIsDraggable(canDrag: boolean): void {
-        this.sprite.setIsDraggable(canDrag)
-    }
-
-    getDragRef(): Draggable[] {
-        return this.sprite.getDragRef()
-    }
-    setDragRef(drag: Draggable[]): void {
-        this.sprite.setDragRef(drag)
-    }
-  
-
-
     getX():number{
         return gsap.getProperty(this.element, "x") as number
     }
+
 
     getY():number{
         return gsap.getProperty(this.element, "y") as number
     }
 
+
+    getAttachedSprites(): UseSprite[] {
+        return this.sprite.getAttachedSprites()
+    }
+
+
+    getDraggable(): Draggable[] {
+        return this.sprite.getDraggable()
+    }
+
     
+    setDraggable(drag: Draggable[]): void {
+        this.sprite.setDraggable(drag)
+    }
+  
+
 
 
     /////////////////////////////////
@@ -75,9 +67,11 @@ class SpriteAbility implements UseSprite{
         this.sprite.setScale(scale)
     }
 
+
     addSprite(useSprite: UseSprite): void {
         this.sprite.addSprite(useSprite)
     }
+
 
     removeSprite(useSprite: UseSprite): void {
         this.sprite.removeSprite(useSprite)
@@ -87,21 +81,28 @@ class SpriteAbility implements UseSprite{
     moveX(x: number, duration: number): void {
         this.sprite.moveX(x, duration)
     }
+
+
     moveY(y: number, duration: number): void {
         this.sprite.moveY(y, duration)
     }
+
 
     callAfterMove(direction: string, value: number, duration:number, callback: Function): void {
         this.sprite.callAfterMove(direction, value, duration, callback)
     }
 
+
     moveWithUpdate(direction: string, value: number, duration: number, onUpdate: Function): void {
         this.sprite.moveWithUpdate(direction, value, duration, onUpdate)
     }
 
+
     setX(x: number, duration: number): void {
         this.sprite.setX(x, duration)
     }
+
+
     setY(y: number, duration: number): void {
         this.sprite.setY(y, duration)
     }
@@ -114,8 +115,6 @@ class SpriteAbility implements UseSprite{
         this.sprite.setParent(targetParent)
     }
 
-
-  
 
     onClick(): void {
         this.sprite.onClick()

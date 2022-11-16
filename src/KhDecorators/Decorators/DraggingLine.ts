@@ -34,19 +34,28 @@ class DraggingLine extends SpriteAbility{
 
 
     override moveY(y: number, duration: number): void {
-        console.log(y)
         super.moveY(y, duration)
         this.moveLine(0, y, duration)
     }
 
 
+    /**
+     * updates the line such that it's connected to both the center of the sprite
+     * and the center of the target when being dragged
+     * @param dragX the change in x position of the element being dragged
+     * @param dragY the change in y position of the element being dragged
+     */
     override onDrag(dragX:number, dragY:number): void {
+        // retrieves the point the line should connect to the sprite from
         if (this.from == "top") this.pointA = Sprite.getTopCenter(this.sprite)
         else this.pointA = Sprite.getBottomCenter(this.sprite)
 
+        // retrieves the point the line should connect to the target from
         if (this.to == "top") this.pointB = Sprite.getTopCenter(this.connectTarget)
         else this.pointB = Sprite.getBottomCenter(this.connectTarget)
 
+        // updates the two points of the line when dragging such that one point is connected to the center of the sprite and the
+        // other is connected to the center of the target
         gsap.set(this.line, {attr:{x1:this.pointA[0], y1:this.pointA[1], x2:this.pointB[0], y2:this.pointB[1]}})
         super.onDrag(dragX, dragY)
     }

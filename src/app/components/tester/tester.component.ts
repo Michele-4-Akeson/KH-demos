@@ -19,7 +19,6 @@ export class TesterComponent implements OnInit, AfterViewInit {
 
   constructor() {}
   ngAfterViewInit(): void {
-    AssetManager.addImage(this.spriteDefs.nativeElement, "https://res.cloudinary.com/dg9cqf9zn/image/upload/v1659473813/barrels2_1_mbrlo2.svg", 100, 100)
     let sprite = AssetManager.createSpriteIn(this.svgRef.nativeElement, "1", 0, 400)
     sprite.element.addEventListener("click", (e)=>sprite.onClick())
 
