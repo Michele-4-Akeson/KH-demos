@@ -30,7 +30,7 @@ class Drag extends SpriteAbility{
                 }
 
                 super.onDragEnd()
-                console.log(this)
+                
             }
         })
 

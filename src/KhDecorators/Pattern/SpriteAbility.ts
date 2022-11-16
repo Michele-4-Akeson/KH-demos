@@ -14,6 +14,7 @@ class SpriteAbility implements UseSprite{
         this.parent = this.sprite.parent
 
     }
+  
  
   
   
@@ -90,8 +91,12 @@ class SpriteAbility implements UseSprite{
         this.sprite.moveY(y, duration)
     }
 
-    moveWithAction(direction: string, value: number, duration:number, callback: Function): void {
-        this.sprite.moveWithAction(direction, value, duration, callback)
+    callAfterMove(direction: string, value: number, duration:number, callback: Function): void {
+        this.sprite.callAfterMove(direction, value, duration, callback)
+    }
+
+    moveWithUpdate(direction: string, value: number, duration: number, onUpdate: Function): void {
+        this.sprite.moveWithUpdate(direction, value, duration, onUpdate)
     }
 
     setX(x: number, duration: number): void {

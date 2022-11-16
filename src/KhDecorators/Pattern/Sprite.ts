@@ -8,11 +8,13 @@ class Sprite implements UseSprite {
     isDraggable:boolean = true
     dragRef:globalThis.Draggable[] = []
     attachedSprites:UseSprite[] = []
+   
     
     constructor(svgUseElement:SVGUseElement){
         this.element = svgUseElement
        
     }
+   
  
   
 
@@ -96,6 +98,9 @@ class Sprite implements UseSprite {
         gsap.to(this.element, {y:y, duration:duration})
     }
 
+
+
+
     setParent(targetParent: SVGSVGElement): void {
         if (this.parent) this.parent.removeChild(this.element)
         targetParent.append(this.element)
@@ -110,7 +115,8 @@ class Sprite implements UseSprite {
 
 
     onDrag(dragX: number, dragY: number): void {
-        console.log(dragX, dragY)
+        console.log("drag")
+
     }
 
 
@@ -126,7 +132,7 @@ class Sprite implements UseSprite {
         }
     }
 
-    moveWithAction(direction: string, value: number, duration:number, callback: Function): void {
+    callAfterMove(direction: string, value: number, duration:number, callback: Function): void {
         switch(direction){
             case "x":
                 let newX = this.getX() + value
@@ -135,6 +141,22 @@ class Sprite implements UseSprite {
             case "y":
                 let newY = this.getY() + value
                 gsap.to(this.element, {y:newY, duration:duration, onComplete(){callback()}})
+                break
+
+
+
+        }
+    }
+
+    moveWithUpdate(direction: string, value: number, duration: number, onUpdate: Function): void {
+        switch(direction){
+            case "x":
+                let newX = this.getX() + value
+                gsap.to(this.element, {x:newX, duration:duration, onUpdate:()=>onUpdate()})
+                break
+            case "y":
+                let newY = this.getY() + value
+                gsap.to(this.element, {y:newY, duration:duration, onUpdate:()=>onUpdate()})
                 break
 
 

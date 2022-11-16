@@ -31,7 +31,7 @@ class Weight extends SpriteAbility{
     override onDragEnd(): void {
         let difference = this.currentY - this.getY()
         this.setIsDraggable(false)
-        this.moveWithAction('y', difference, 1, ()=>this.setIsDraggable(true))
+        this.callAfterMove('y', difference, 1, ()=>this.setIsDraggable(true))
         for (let sprite of this.getAttachedSprites()){
             sprite.moveY(difference, 1)
         }
@@ -58,7 +58,7 @@ class Weight extends SpriteAbility{
         let previousWeight = this.getPhysics().weight
         this.getPhysics().weight += weight
         this.setIsDraggable(false)
-        this.moveWithAction("y", this.getPhysics().weight - previousWeight, 1, ()=>this.setIsDraggable(true))
+        this.callAfterMove("y", this.getPhysics().weight - previousWeight, 1, ()=>this.setIsDraggable(true))
         this.currentY = this.currentY + this.getPhysics().weight - previousWeight
         for (let sprite of this.getAttachedSprites()){
             sprite.moveY(weight, 1)

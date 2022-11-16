@@ -125,10 +125,33 @@ interface UseSprite {
      * @param value the distance the sprite will move from its location
      * @param callback the function that will be called after completeion of this movement
      */
-    moveWithAction(direction:string, value:number, duration:number, callback:Function):void
+    callAfterMove(direction:string, value:number, duration:number, callback:Function):void
 
 
-
+    /**
+     * moves the sprite in a given direction, and on every update frame, the onUpdate is called
+     * allowing for a function to be called during the movement
+     * 
+     * 
+     * NOTE:
+     * -- when this is used in a decorator, to add to the functionality of the onUpdate function,
+     * you must call the super and pass an arrow function such that your new code is added to it 
+     * and the onUpdate function paramater is also is the arrow function and called as follows
+     * 
+     *  moveWithUpdate(d, v, dur, onUpdate){
+     *      super(d, v, dur, ()=> {
+     *          // code you want called on each update
+     *          onUpdate() // the other functionality which was passed to a parameter 
+     * 
+     *      })
+     * 
+     * }
+     * @param direction the direction the sprite will move
+     * @param value the distance the sprite will move from its location
+     * @param duration the amount of time in which the movement will take place
+     * @param onUpdate a function that will be called on every update
+     */
+    moveWithUpdate(direction:string, value:number, duration:number, onUpdate:Function):void
     
 
     /**

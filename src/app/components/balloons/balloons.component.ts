@@ -8,6 +8,9 @@ import VerticalLine from 'src/KhDecorators/Decorators/VerticalLine';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
 import Weight from 'src/KhDecorators/Decorators/Weight';
 import GroupText from './GroupText';
+import UpdateWithChildren from 'src/KhDecorators/Decorators/UpdateWithChildren';
+import MoveWithChildren from 'src/KhDecorators/Decorators/MoveWithChildren';
+import DragWithChildren from 'src/KhDecorators/Decorators/DragWithChildren';
 
 
 
@@ -25,8 +28,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   basket:UseSprite | null = null
   spring:UseSprite | null = null
   ruler:UseSprite | null = null
-  weight:number = 65
-  line:UseSprite | null = null
+  incrementDistance:number = 65
   isRecording:boolean = false
   canAdd:boolean = true
   zoomValue = 0
@@ -53,7 +55,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
        * when we use our methods that references the bbox, it doesn't do what we want it to
        */
       this.basket = AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)
-      this.basket = new Weight(this.basket)
+      this.basket = new MoveWithChildren(this.basket)
+      this.basket = new DragWithChildren(this.basket)
       this.basket = new Drag(this.basket, 'y', null, null)
       let basketBottom = Sprite.getBottomCenter(this.basket)
 
@@ -64,15 +67,16 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       
 
       this.spring = new Strechable(AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom[1]), null, 720)
-      this.spring.element.setAttribute("transform-origin", "bottom")
       this.basket.addSprite(this.spring)
       this.addEnvironment() // sets up the position of elements already in the dom
       this.basket.setParent(this.svgRef.nativeElement) // bring to front of svg
       
-      this.moveEquation()
       this.zoomIn()
 
       this.recordText = new GroupText(this.svgRef.nativeElement, 10, 10, "25px")
+      this.recordText.group.classList.add("hide")
+      gsap.set(this.recordText.group, {y:basketBottom[1], x:Sprite.getRight(this.ruler)})
+      this.moveEquation()
     
 
     }, 450)
@@ -109,27 +113,36 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   addBalloon(){
     if (this.canAdd){
+      this.canAdd = false
       this.currentValue += 1
       this.outputValues.balloonsAdded += 1
       this.add(this.outputOrder, "balloonsAdded")
       this.updateOutputValue()
 
-      this.canAdd = false
       this.basket?.setIsDraggable(false)
       let balloon = AssetManager.createSpriteFromId("redBalloon")
 
       balloon.setParent(this.svgRef.nativeElement)
       balloon.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
-      balloon.getPhysics().weight -= this.weight
 
-      balloon.moveWithAction("y", this.basket!.getY() - 100 - (Math.random() * 50), 1, ()=>{
+      balloon.callAfterMove("y", this.basket!.getY() - 100 - (Math.random() * 50), 1, ()=>{
       balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
       balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon, this.basket!)) 
       this.basket!.addSprite(balloon)
+
+
+
+      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+        this.moveEquation()
+      
+      })
+
+
+
+
       setTimeout(()=>{
         this.canAdd = true
         this.basket?.setIsDraggable(true)
-        this.moveEquation()
 
       }, 750)
 
@@ -141,6 +154,10 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  
+
+ 
 
   addSandBag(){
     if (this.canAdd){
@@ -155,17 +172,19 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       let sandBag = AssetManager.createSpriteFromId("sandBag")
       sandBag.setParent(this.svgRef.nativeElement)
       sandBag.setX(this.basket!.getX() + (Math.random() * (this.basket!.element.getBBox().width - 70)), 0)
-      sandBag.getPhysics().weight += this.weight
       
       
-      sandBag.moveWithAction('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
+      sandBag.callAfterMove('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
         sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
         sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag, this.basket!))
         this.basket!.addSprite(sandBag)
+        this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
+          this.moveEquation()
+        })
+
         setTimeout(()=>{
           this.canAdd = true
           this.basket?.setIsDraggable(true)
-          this.moveEquation()
 
         }, 750)
         
@@ -176,11 +195,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     }
    
   }
-
-
-
-
-
 
 
   
@@ -195,8 +209,11 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue -= 1
       this.add(this.outputOrder, "balloonsRemoved")
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', balloon.getY() - 200, 1.2, ()=>{
+      balloon.callAfterMove('y', balloon.getY() - 200, 1.2, ()=>{
         balloon.destroy()
+      })
+
+      this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
         this.moveEquation()
       })
 
@@ -205,10 +222,15 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue += 1
       this.outputValues.balloonsRemoved += 1
       this.basket!.removeSprite(balloon)
-      balloon.moveWithAction('y', balloon.getY() - 200, 1.2, ()=>{
+      balloon.callAfterMove('y', balloon.getY() - 200, 1.2, ()=>{
         balloon.destroy()
+      })
+
+      this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
         this.moveEquation()
-    })
+      })
+
+
     }
 
     this.updateOutputValue()
@@ -228,10 +250,12 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', sandBag.getY() + 100, 1.2, ()=>{
+      sandBag.callAfterMove('y', sandBag.getY() + 100, 1.2, ()=>{
         sandBag.destroy()
-        this.moveEquation()
+      })
 
+      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+        this.moveEquation()
       })
 
     } else if (distanceY > 0){
@@ -239,8 +263,12 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.outputValues.sandBagsRemoved += 1
       this.add(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.moveWithAction('y', sandBag.getY() + 100, 1.2, ()=>{
+      sandBag.callAfterMove('y', sandBag.getY() + 100, 1.2, ()=>{
         sandBag.destroy()
+      })
+
+      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+        this.moveEquation()
       })
     }
 
@@ -250,12 +278,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
 
-
-
-
   toggleRecording(){
     this.isRecording=!this.isRecording
-    this.moveEquation()
 
     if (this.isRecording){
       this.whiteLine.nativeElement.classList.remove("hide")
@@ -286,16 +310,16 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
           this.output += " = " + this.signString(this.outputValues[value])
           break
         case "balloonsAdded":
-          this.output += " + " + this.signString(this.outputValues[value])
+          this.output += " + " + `(${this.signString(this.outputValues[value])})`
           break
         case "balloonsRemoved":
-          this.output += " - " + this.signString(this.outputValues[value])
+          this.output += " - " + `(${this.signString(this.outputValues[value])})`
           break
         case "sandBagsAdded":
-          this.output += " + " + this.signString(-this.outputValues[value])
+          this.output += " + " +`(${this.signString(this.outputValues[value])})`
           break
         case "sandBagsRemoved":
-          this.output += " - " + this.signString(-this.outputValues[value])
+          this.output += " - " + `(${this.signString(this.outputValues[value])})`
           break
       }
     }
@@ -305,9 +329,9 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
   signString(n:number){
     if (n < 0){
-      return `(${n})`
+      return `${n}`
     } else if (n > 0){
-      return `(+${n})`
+      return `+${n}`
     } else {
       return `${n}`
     }
@@ -320,12 +344,15 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   }
 
 
+
+
   moveEquation(){
-    let bottom = Sprite.getBottomCenter(this.basket!)[1]
-    let rulerRight = Sprite.getRight(this.ruler!)
-    this.recordText?.move(rulerRight, bottom)
-    gsap.to(this.whiteLine.nativeElement, {attr:{y1:bottom - 5, y2:bottom - 5}})
+    const bottomCenter = Sprite.getBottomCenter(this.basket!)
+    gsap.set(this.recordText!.group, {y:bottomCenter[1]})
+    gsap.set(this.whiteLine.nativeElement!, {attr:{y1:bottomCenter[1], y2:bottomCenter[1]}})    
   }
+
+
 
 
   zoomIn(){
