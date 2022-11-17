@@ -82,6 +82,7 @@ interface UseSprite {
      */
     moveX(x:number, duration:number):void
 
+    
     /**
      * moves the sprite vertically by y from its current position
      * @param y the distance vertically the sprite will move from its current location

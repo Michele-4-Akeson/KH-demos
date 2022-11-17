@@ -75,8 +75,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket.addSprite(this.spring)
 
 
- 
-
       //reappends the basket to the svg element such that visually in front of all other elements in that svg
       this.basket.setParent(this.svgRef.nativeElement)
       
@@ -350,7 +348,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     if (this.zoomValue < 4){
       AssetManager.zoomIn(this.svgRef.nativeElement)
       this.zoomValue += 1
-      
     }
   }
 
@@ -358,9 +355,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     if (this.zoomValue > 0){
       AssetManager.zoomOut(this.svgRef.nativeElement)
       this.zoomValue -= 1
-     
-
-
     }
   }
   

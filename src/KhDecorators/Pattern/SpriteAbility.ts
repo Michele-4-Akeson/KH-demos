@@ -82,6 +82,8 @@ class SpriteAbility implements UseSprite{
         this.sprite.moveX(x, duration)
     }
 
+    
+
 
     moveY(y: number, duration: number): void {
         this.sprite.moveY(y, duration)
