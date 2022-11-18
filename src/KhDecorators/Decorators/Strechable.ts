@@ -44,6 +44,18 @@ class Strechable extends SpriteAbility{
     }
 
 
+    override setX(x: number, duration: number): void {
+        super.setX(x, duration)
+        this.strechX(x - this.getX(), duration)
+    }
+
+    override setY(y: number, duration: number): void {
+        super.setY(y, duration)
+        this.strechY(y - this.getY(), duration)
+    }
+
+
+
     
 
     strechY(y:number, duration:number){

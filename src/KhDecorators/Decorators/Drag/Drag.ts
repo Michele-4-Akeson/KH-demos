@@ -1,6 +1,6 @@
 import {gsap, Draggable} from "gsap/all";
-import SpriteAbility from "../Pattern/SpriteAbility";
-import UseSprite from "../Pattern/UseSprite";
+import SpriteAbility from "../../Pattern/SpriteAbility";
+import UseSprite from "../../Pattern/UseSprite";
 
 
 class Drag extends SpriteAbility{

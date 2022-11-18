@@ -6,6 +6,8 @@ class Sprite implements UseSprite {
     isDraggable:boolean = true
     dragRef:globalThis.Draggable[] = []
     attachedSprites:UseSprite[] = []
+    previousX:number = 0
+    previousY:number = 0
    
     
     constructor(svgUseElement:SVGUseElement){
@@ -47,6 +49,14 @@ class Sprite implements UseSprite {
         }
     }
 
+    getPreviousX(){
+        return this.previousX
+    }
+
+    getPreviousY(){
+        return this.previousY
+    }
+
     ///////////////////////
     // SETTERS
     ///////////////////////
@@ -77,21 +87,33 @@ class Sprite implements UseSprite {
     moveX(x: number, duration: number): void {
         let newX = this.getX() + x
         console.log(newX)
-        gsap.to(this.element, {x:newX, duration:duration})
+        gsap.to(this.element, {x:newX, duration:duration, onComplete:()=>{this.setPreviousX(this.getX())}})
     }
 
     
     moveY(y: number, duration: number): void {
         let newY = this.getY() + y
-        gsap.to(this.element, {y:newY, duration:duration})     
+        gsap.to(this.element, {y:newY, duration:duration, onComplete:()=>{this.setPreviousY(this.getY())}})     
     }
 
     setX(x: number, duration: number): void {
         gsap.to(this.element, {x:x, duration:duration})
+        this.previousX = x
     }
 
     setY(y: number, duration: number): void {
         gsap.to(this.element, {y:y, duration:duration})
+        this.previousY = y
+    }
+
+    setPreviousX(x:number){
+        this.previousX = x
+
+    }
+
+    setPreviousY(y:number){
+        this.previousY = y
+
     }
 
 
@@ -144,21 +166,23 @@ class Sprite implements UseSprite {
         }
     }
 
-    moveWithUpdate(direction: string, value: number, duration: number, onUpdate: Function): void {
+    elasticMove(direction: string, value: number, duration: number, onUpdate: Function): void {
         switch(direction){
             case "x":
                 let newX = this.getX() + value
-                gsap.to(this.element, {x:newX, duration:duration, onUpdate:()=>onUpdate()})
+                gsap.to(this.element, {x:newX, duration:duration, ease:"elastic", onUpdate:()=>onUpdate()})
                 break
             case "y":
                 let newY = this.getY() + value
-                gsap.to(this.element, {y:newY, duration:duration, onUpdate:()=>onUpdate()})
+                gsap.to(this.element, {y:newY, duration:duration, ease:"elastic", onUpdate:()=>onUpdate()})
                 break
 
 
 
         }
     }
+
+    
 
     //////////////////////////////////
     // STATIC FUNCTION

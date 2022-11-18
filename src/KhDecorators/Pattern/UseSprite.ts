@@ -5,6 +5,9 @@ interface UseSprite {
     parent: SVGSVGElement | null
 
 
+    /**
+     * IDEA: to(parameter:Object) -- just reperents the abstratcion of the gsap.to(this, parameters) 
+     */
 
  
    ////////////////////////////////
@@ -39,15 +42,17 @@ interface UseSprite {
       * returns the y position of the sprite
       */
      getY():number
- 
- 
 
 
 
-
+     getPreviousX():number
+     getPreviousY():number
     ////////////////////////////////
     // SETTERS:
     ////////////////////////////////
+
+    setPreviousX(x:number):void
+    setPreviousY(y:number):void
 
     /**
      * sets the scale of the useSprite
@@ -74,6 +79,7 @@ interface UseSprite {
      */
     removeSprite(useSprite:UseSprite):void
 
+   
 
     /**
      * moves the sprite horizontally by x from its current position
@@ -137,7 +143,7 @@ interface UseSprite {
      * @param duration the amount of time in which the movement will take place
      * @param onUpdate a function that will be called on every update ()=>{}
      */
-    moveWithUpdate(direction:string, distance:number, duration:number, onUpdate:Function):void
+    elasticMove(direction:string, distance:number, duration:number, onUpdate:Function):void
     
 
     /**

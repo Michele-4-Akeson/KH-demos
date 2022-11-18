@@ -13,6 +13,18 @@ class SpriteAbility implements UseSprite{
         this.parent = this.sprite.parent
 
     }
+    getPreviousX(): number {
+        return this.sprite.getPreviousX()
+    }
+    getPreviousY(): number {
+        return this.sprite.getPreviousY()
+    }
+    setPreviousX(x: number): void {
+        this.sprite.setPreviousX(x)
+    }
+    setPreviousY(y: number): void {
+        this.sprite.setPreviousY(y)
+    }
   
  
   
@@ -95,8 +107,8 @@ class SpriteAbility implements UseSprite{
     }
 
 
-    moveWithUpdate(direction: string, value: number, duration: number, onUpdate: Function): void {
-        this.sprite.moveWithUpdate(direction, value, duration, onUpdate)
+    elasticMove(direction: string, value: number, duration: number, onUpdate: Function): void {
+        this.sprite.elasticMove(direction, value, duration, onUpdate)
     }
 
 

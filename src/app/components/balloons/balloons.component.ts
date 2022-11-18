@@ -1,14 +1,17 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import gsap from 'gsap';
 import AssetManager from 'src/KhDecorators/Pattern/AssetManager';
-import Drag from 'src/KhDecorators/Decorators/Drag';
+import Drag from 'src/KhDecorators/Decorators/Drag/Drag';
 import UseSprite from 'src/KhDecorators/Pattern/UseSprite';
 import Sprite from 'src/KhDecorators/Pattern/Sprite';
-import VerticalLine from 'src/KhDecorators/Decorators/VerticalLine';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
 import GroupText from './GroupText';
-import MoveWithChildren from 'src/KhDecorators/Decorators/MoveWithChildren';
-import DragWithChildren from 'src/KhDecorators/Decorators/DragWithChildren';
+import WeakLine from 'src/KhDecorators/Decorators/Lines/WeakLine';
+import MoveAttached from 'src/KhDecorators/Decorators/Movement/MoveAttached';
+import DragAttached from 'src/KhDecorators/Decorators/Drag/DragAttached';
+import ReturnAfterDrag from 'src/KhDecorators/Decorators/Drag/ReturnAfterDrag';
+import SpringyDrag from 'src/KhDecorators/Decorators/Drag/SpringyDrag';
+
 
 
 
@@ -29,6 +32,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   incrementDistance:number = 65
   isRecording:boolean = false
   canAdd:boolean = true
+  canZoom:boolean = true
   zoomValue = 0
   recordText:GroupText|null = null
 
@@ -47,10 +51,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
       // creates an adds basket UseSprite at position (600, 270) in the svg element
       this.basket = AssetManager.createSpriteIn(this.svgRef.nativeElement, "basket", 600, 270)
-      // adds functionality such that when basket moves, all attached sprites move with it
-      this.basket = new MoveWithChildren(this.basket)
+     
+     
+      // adds functionality such that after a drag is ended, the useSprite will return the position before the drag started
+      this.basket = new SpringyDrag(this.basket)
       // adds functionality such that when the basket is dragged, all attached sprites move with the drag 
-      this.basket = new DragWithChildren(this.basket)
+      this.basket = new DragAttached(this.basket)
+      // adds functionality such that when basket moves, all attached sprites move with it
+      this.basket = new MoveAttached(this.basket)
       // adds the functionality of being able to drag the basket in the y axis
       this.basket = new Drag(this.basket, 'y', null, null)
 
@@ -69,6 +77,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
       // creates the ruler useSprite at the position which is just right of the basket useSprite
       this.ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", basketRight, 0)
+      this.ruler = new SpringyDrag(this.ruler)
+      this.ruler = new Drag(this.ruler, "y", null, null)
       // creates the spring useSprite with strechable functionality such that it is streched in along the y-axis from the point, 720, inthe svg
       this.spring = AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom)
       this.spring = new Strechable(this.spring, null, 720)
@@ -117,12 +127,12 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
       //after the balloon has reached its location, the vertical line and draggable functionality is added 
       balloon.callAfterMove("y", this.basket!.getY() - 100 - (Math.random() * 50), 1, ()=>{
-        balloon = new VerticalLine(balloon, this.basket!, "bottom", "top", "white") 
+        balloon = new WeakLine(balloon, this.basket!, "bottom", "top", "white") 
         balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon)) 
         this.basket!.addSprite(balloon)
 
         // basket is moved upwards
-        this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+        this.basket?.elasticMove("y", -this.incrementDistance, 1, ()=>{
           this.moveEquationLine()
         
         })
@@ -160,10 +170,10 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       
       
       sandBag.callAfterMove('y', this.basket!.getY() + (Math.random() * this.basket!.element.getBBox().height + 20), 1, ()=>{
-        sandBag = new VerticalLine(sandBag, this.basket!, "top", "top", "white")
+        sandBag = new WeakLine(sandBag, this.basket!, "top", "top", "white")
         sandBag = new Drag(sandBag, 'x,y', null, ()=>this.checkSandBag(sandBag))
         this.basket!.addSprite(sandBag)
-        this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
+        this.basket?.elasticMove("y", this.incrementDistance, 1, ()=>{
           this.moveEquationLine()
         })
 
@@ -206,12 +216,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket?.removeSprite(balloon)
 
       // destroys the balloon after moving it upwards from it's current position
-      balloon.callAfterMove('y', balloon.getY() - 200, 1.2, ()=>{
+      let viewBox = this.svgRef.nativeElement.viewBox["baseVal"]
+      let y = viewBox.y - viewBox.height;
+      balloon.callAfterMove('y', y, 3, ()=>{
         balloon.destroy()
       })
 
       // basket is moved downwards along with all attached sprites and the equation/line
-      this.basket?.moveWithUpdate("y", this.incrementDistance, 1, ()=>{
+      this.basket?.elasticMove("y", this.incrementDistance, 1, ()=>{
         this.moveEquationLine()
       })
 
@@ -235,11 +247,15 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue += 1
       this.addToOrder(this.outputOrder, "sandBagsRemoved")
       this.basket!.removeSprite(sandBag)
-      sandBag.callAfterMove('y', sandBag.getY() + 100, 1.2, ()=>{
+
+      let viewBox = this.svgRef.nativeElement.viewBox["baseVal"]
+      let y = viewBox.y - viewBox.height;
+      
+      sandBag.callAfterMove('y', -y, 3, ()=>{
         sandBag.destroy()
       })
 
-      this.basket?.moveWithUpdate("y", -this.incrementDistance, 1, ()=>{
+      this.basket?.elasticMove("y", -this.incrementDistance, 1, ()=>{
         this.moveEquationLine()
       })
     }
@@ -345,16 +361,26 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
   zoomIn(){
-    if (this.zoomValue < 4){
+    if (this.zoomValue < 4 && this.canZoom){
+      this.canZoom = false
       AssetManager.zoomIn(this.svgRef.nativeElement)
       this.zoomValue += 1
+
+      setTimeout(()=>{
+        this.canZoom = true
+      }, 750)
     }
   }
 
   zoomOut(){
-    if (this.zoomValue > 0){
+    if (this.zoomValue > 0 && this.canZoom){
+      this.canZoom = false
       AssetManager.zoomOut(this.svgRef.nativeElement)
       this.zoomValue -= 1
+
+      setTimeout(()=>{
+        this.canZoom = true
+      }, 750)
     }
   }
   
