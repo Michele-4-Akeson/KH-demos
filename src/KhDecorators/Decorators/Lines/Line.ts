@@ -32,6 +32,24 @@ class Line extends SpriteAbility{
         this.drawLine(from, to)
     }
 
+    override spriteTo(parameters: Object): void {
+        let y = Sprite.getProperty(parameters, "y")
+        let duration = Sprite.getProperty(parameters, "duration")
+        if (duration){
+            console.log("duration:\nxxxxxxxxxxxxxxx", duration)
+            this.moveLine(0, y, duration)
+        }
+
+        super.spriteTo(parameters)
+    }
+
+    override spriteUpdate(parameters: Object, onUpdate: Function): void {
+        super.spriteUpdate(parameters, ()=>{
+            onUpdate()
+            //this.moveLine(0, this.getY(), 0)
+        })
+    }
+
 
     override moveY(y: number, duration: number): void {
         super.moveY(y, duration)
@@ -102,8 +120,8 @@ class Line extends SpriteAbility{
     moveLine(x:number, y:number, duration:number){
         this.pointA = [this.pointA[0] + x, this.pointA[1] + y]
         this.pointB = [this.pointB[0] + x, this.pointB[1] + y]
-
-        gsap.to(this.line, {attr:{y1:this.pointA[1], y2:this.pointB[1]}, duration:duration})
+        console.log("y", y, "duration",duration)
+        gsap.to(this.line, {duration:duration, attr:{y1:this.pointA[1], y2:this.pointB[1]}})
 
 
     }

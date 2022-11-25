@@ -22,6 +22,17 @@ class Sprite implements UseSprite {
     ///////////////////////
     // GETTER
     ///////////////////////
+
+    spriteTo(parameters: Object): void {
+        gsap.to(this.element, parameters)
+    }
+
+    spriteUpdate(parameters: Object, onUpdate: Function): void {
+        Sprite.AddObjects(parameters, {onUpdate:onUpdate})
+        gsap.to(this.element, parameters)
+    }
+  
+   
     getX():number{
         return gsap.getProperty(this.element, "x") as number
     }
@@ -80,13 +91,11 @@ class Sprite implements UseSprite {
 
     removeSprite(useSprite: UseSprite): void {
         this.attachedSprites = this.attachedSprites.filter(sprite=>sprite != useSprite)
-        console.log(this.attachedSprites)
     }
     
 
     moveX(x: number, duration: number): void {
         let newX = this.getX() + x
-        console.log(newX)
         gsap.to(this.element, {x:newX, duration:duration, onComplete:()=>{this.setPreviousX(this.getX())}})
     }
 
@@ -249,6 +258,40 @@ class Sprite implements UseSprite {
         let x = useSprite.getX() + (useSprite.element.getBBox().width/2)
         let y = useSprite.getY()
         return [x, y]
+    }
+
+    /**
+     * 
+     * @param obj1 the object that will be added to 
+     * @param obj2 the object whose key:value pairs will be added to obj1
+     * @returns obj1 such that all values in obj2 are either added to the exsisting
+     * values in obj1, or, are added as entirely new pairs
+     */
+    static AddObjects(obj1:Object, obj2:Object):Object{
+        // iterates over every key in the obj1 and adds to the values that obj2 has
+        Object.keys(obj1).forEach((key) => {
+            if (obj2.hasOwnProperty(key)){
+                (obj1 as any)[key] += (obj2 as any)[key]
+            }
+        })
+
+        // iterates over every key in the obj1; finds all key:value pairs not shared between obj1 and obj2
+        // adds those key:value pairs to obj1
+        Object.keys(obj2).forEach((key) => {
+            if (!obj1.hasOwnProperty(key)){
+                (obj1 as any)[key] = (obj2 as any)[key]
+            }
+
+        })
+        return obj1
+    }
+
+    static getProperty(obj:Object, key:string):any{
+        if (obj.hasOwnProperty(key)){
+            return (obj as any)[key]
+        } else {
+            return null
+        }
     }
 
 

@@ -34,7 +34,6 @@ class VerticalLine extends SpriteAbility{
 
 
     override moveY(y: number, duration: number): void {
-        console.log(y)
         super.moveY(y, duration)
         this.moveLine(0, y, duration)
     }

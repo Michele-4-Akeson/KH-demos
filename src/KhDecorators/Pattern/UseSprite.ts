@@ -7,6 +7,10 @@ interface UseSprite {
 
     /**
      * IDEA: to(parameter:Object) -- just reperents the abstratcion of the gsap.to(this, parameters) 
+     * and that way we can create decorators that aren't limiting gsap and just append the functionality 
+     * of it with
+     * 
+     * 
      */
 
  
@@ -47,6 +51,13 @@ interface UseSprite {
 
      getPreviousX():number
      getPreviousY():number
+
+     /**
+      * could replace moveX, moveY, setX, setY
+      * @param parameters 
+      */
+     spriteTo(parameters:Object):void
+     spriteUpdate(parameters:Object, onUpdate:Function):void
     ////////////////////////////////
     // SETTERS:
     ////////////////////////////////

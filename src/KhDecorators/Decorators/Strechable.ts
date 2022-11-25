@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import Sprite from "../Pattern/Sprite";
 import SpriteAbility from "../Pattern/SpriteAbility";
 import UseSprite from "../Pattern/UseSprite";
 
@@ -26,6 +27,17 @@ class Strechable extends SpriteAbility{
         this.strechY(0, 1)
     }
 
+    override spriteTo(parameters: Object): void {
+        let x = Sprite.getProperty(parameters, "x")
+        let y = Sprite.getProperty(parameters, "y")
+        let duration = Sprite.getProperty(parameters, "duration")
+        
+        this.strechX(x, duration)
+        this.strechY(y, duration)
+        super.spriteTo(parameters)
+        
+    }
+
 
     override moveY(y: number, duration: number): void {
         this.strechY(y, duration)
@@ -44,6 +56,7 @@ class Strechable extends SpriteAbility{
     }
 
 
+
     override setX(x: number, duration: number): void {
         super.setX(x, duration)
         this.strechX(x - this.getX(), duration)
@@ -55,10 +68,11 @@ class Strechable extends SpriteAbility{
     }
 
 
-
+    
     
 
     strechY(y:number, duration:number){
+        //console.log(y, duration)
         if (this.anchorY){
             let strechDistance = this.anchorY - (this.getY() + y)
             let scale = strechDistance/this.startHeight

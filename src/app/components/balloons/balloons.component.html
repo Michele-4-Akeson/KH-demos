@@ -33,17 +33,19 @@
 <div class="buttonContainer">
   <button (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg"/></button>
   <button (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg"/></button>
+
   <button (click)="toggleRecording()">
     <img *ngIf="!isRecording" src="https://www.pngmart.com/files/3/Play-Button-PNG-Pic.png"/>
     <img *ngIf="isRecording" src="https://icons.iconarchive.com/icons/graphicloads/colorful-long-shadow/256/Button-2-pause-icon.png"/>
   </button>
+  <mat-slide-toggle (click)="toggleEquation()">{{toggleText}}</mat-slide-toggle>
+  
   <button (click)="zoomIn()"><img src="https://www.iconpacks.net/icons/1/free-zoom-in-icon-978-thumb.png"/></button>
   <button (click)="zoomOut()"><img src="https://icons.veryicon.com/png/o/miscellaneous/huihon_iconfont/zoom-21.png"/></button>
   
 </div>
 
 
-<p #recordtext class="record hide" >{{output}}</p>
 
 
   

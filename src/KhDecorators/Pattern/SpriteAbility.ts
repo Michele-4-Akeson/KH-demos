@@ -13,6 +13,8 @@ class SpriteAbility implements UseSprite{
         this.parent = this.sprite.parent
 
     }
+   
+   
     getPreviousX(): number {
         return this.sprite.getPreviousX()
     }
@@ -25,18 +27,15 @@ class SpriteAbility implements UseSprite{
     setPreviousY(y: number): void {
         this.sprite.setPreviousY(y)
     }
-  
- 
-  
-  
-   
- 
-
-  
-  
 
 
-   
+    spriteTo(parameters: Object): void {
+        this.sprite.spriteTo(parameters)
+    }
+
+    spriteUpdate(parameters: Object, onUpdate: Function): void {
+        this.sprite.spriteUpdate(parameters, onUpdate)
+    }
 
 
     /////////////////////////////////

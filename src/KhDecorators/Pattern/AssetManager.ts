@@ -2,20 +2,15 @@ import gsap from "gsap"
 import Sprite from "./Sprite"
 import UseSprite from "./UseSprite"
 const svgNS = "http://www.w3.org/2000/svg"
+
+/**
+ * The AssetManager class is used to assist developers with adding 
+ * use elements to an svg based on the image elements exsisting in the
+ * defs section of the svg. 
+ * 
+ * 
+ */
 class AssetManager {
-
-    /**
-     * @param id the id of the <image> to be referneced
-     * @returns a Sprite object which contains the use tag that references the image with id
-     */
-    static createSpriteFromId(id:string):UseSprite{
-        let useSprite = document.createElementNS(svgNS, "use")
-        useSprite.setAttribute("href", "#" + id)
-        let sprite = new Sprite(useSprite)
-
-        return sprite
-    }
-
 
     /**
      * adds an image to a defs element allowing for a use element to be generated from
@@ -36,11 +31,19 @@ class AssetManager {
     }
 
 
+    /**
+     * @param id the id of the <image> to be referneced
+     * @returns a Sprite object which contains the use tag that references the image with id
+     */
+    static createSpriteFromId(id:string):UseSprite{
+        let useSprite = document.createElementNS(svgNS, "use")
+        useSprite.setAttribute("href", "#" + id)
+        let sprite = new Sprite(useSprite)
+
+        return sprite
+    }
 
 
-    //////////////////////////////////////////
-    // HELPER FUNCTIONS - Keep or remove
-    //////////////////////////////////////////
 
     /**
      * Creates a UseSprite and adds it as a child of an svg parent element at the 

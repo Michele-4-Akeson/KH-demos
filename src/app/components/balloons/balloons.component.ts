@@ -5,12 +5,12 @@ import Drag from 'src/KhDecorators/Decorators/Drag/Drag';
 import UseSprite from 'src/KhDecorators/Pattern/UseSprite';
 import Sprite from 'src/KhDecorators/Pattern/Sprite';
 import Strechable from 'src/KhDecorators/Decorators/Strechable';
-import GroupText from './GroupText';
+import SvgText from './Text/SvgText';
 import WeakLine from 'src/KhDecorators/Decorators/Lines/WeakLine';
 import MoveAttached from 'src/KhDecorators/Decorators/Movement/MoveAttached';
 import DragAttached from 'src/KhDecorators/Decorators/Drag/DragAttached';
-import ReturnAfterDrag from 'src/KhDecorators/Decorators/Drag/ReturnAfterDrag';
 import SpringyDrag from 'src/KhDecorators/Decorators/Drag/SpringyDrag';
+import SymbolGroup from './Text/SymbolGroup';
 
 
 
@@ -34,13 +34,13 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
   canAdd:boolean = true
   canZoom:boolean = true
   zoomValue = 0
-  recordText:GroupText|null = null
-
+  recordText:SvgText|null = null
+  tempText: SvgText|null = null
   currentValue:number = 0
   outputOrder:string[] = ["start"]
   outputValues = {start:0, balloonsAdded:0, balloonsRemoved:0, sandBagsAdded:0, sandBagsRemoved:0}
   
-  output:string = ""
+  toggleText:string = "Symbol Equation"
   
 
 
@@ -78,6 +78,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       // creates the ruler useSprite at the position which is just right of the basket useSprite
       this.ruler = AssetManager.createSpriteIn(this.svgRef.nativeElement, "ruler", basketRight, 0)
       this.ruler = new SpringyDrag(this.ruler)
+      
       this.ruler = new Drag(this.ruler, "y", null, null)
       // creates the spring useSprite with strechable functionality such that it is streched in along the y-axis from the point, 720, inthe svg
       this.spring = AssetManager.createSpriteIn(this.svgRef.nativeElement, "spring", this.basket.getX() + 10, basketBottom)
@@ -89,15 +90,16 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.basket.setParent(this.svgRef.nativeElement)
       
       this.zoomIn()
-
-      this.recordText = new GroupText(this.svgRef.nativeElement, 10, 10, "25px")
-      this.recordText.group.classList.add("hide")
-      gsap.set(this.recordText.group, {y:basketBottom, x:Sprite.getRight(this.ruler)})
+      this.recordText = new SymbolGroup(this.svgRef.nativeElement, "redBalloon", "sandBag", 10, 20, "25px")
+      this.tempText = new SvgText(this.svgRef.nativeElement, 10, 10, "25px")
+      this.tempText.setVisible(false)
+      this.recordText.setVisible(false)
+      this.recordText.move(Sprite.getRight(this.ruler), basketBottom)
+      this.tempText.move(Sprite.getRight(this.ruler), basketBottom)
       this.moveEquationLine()
     
     }, 450)
-    
-    
+
   }
 
 
@@ -115,7 +117,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue += 1
       this.outputValues.balloonsAdded += 1
       this.addToOrder(this.outputOrder, "balloonsAdded")
-      this.updateOutputValue()
+      this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
+
 
       //disbales drag while balloon is moving basket upwards
       this.basket?.getDraggable()[0].disable()
@@ -130,7 +133,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
         balloon = new WeakLine(balloon, this.basket!, "bottom", "top", "white") 
         balloon = new Drag(balloon, 'x,y', null, ()=>this.checkBalloon(balloon)) 
         this.basket!.addSprite(balloon)
-
         // basket is moved upwards
         this.basket?.elasticMove("y", -this.incrementDistance, 1, ()=>{
           this.moveEquationLine()
@@ -141,7 +143,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
         setTimeout(()=>{
           this.canAdd = true
           this.basket?.getDraggable()[0].enable()
-
+          
         }, 750)
 
     
@@ -161,7 +163,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.currentValue -= 1
       this.outputValues.sandBagsAdded += 1
       this.addToOrder(this.outputOrder, "sandBagsAdded")
-      this.updateOutputValue()
+      this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
+
 
       this.basket?.getDraggable()[0].disable()
       let sandBag = AssetManager.createSpriteFromId("sandBag")
@@ -181,7 +184,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
           this.canAdd = true
           this.basket?.getDraggable()[0].enable()
 
-        }, 750)
+        }, 1550)
         
       })
 
@@ -229,7 +232,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
     } 
 
-    this.updateOutputValue()
+    this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
+
 
   }
 
@@ -261,7 +265,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     }
 
 
-    this.updateOutputValue()
+    this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
 
   }
 
@@ -274,13 +278,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
    */
   toggleRecording(){
     this.isRecording=!this.isRecording
-
+    this.recordText?.toggle()
     if (this.isRecording){
       this.whiteLine.nativeElement.classList.remove("hide")
-      this.recordText!.group.classList.remove("hide")
+      //this.recordText?.setVisible(true)
     } else {
       this.whiteLine.nativeElement.classList.add("hide")
-      this.recordText!.group.classList.add("hide")
+      //this.recordText?.setVisible(false)
+
 
     }
 
@@ -288,59 +293,39 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     this.outputValues.balloonsRemoved = 0
     this.outputValues.sandBagsAdded = 0
     this.outputValues.sandBagsRemoved = 0
-    this.output = ""
     this.outputOrder = ["start"]
     this.outputValues.start = this.currentValue
 
-    this.updateOutputValue()
+    this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
   }
 
 
-
-  /**
-   * updates the output of the equation's text such that the addtion 
-   * of balloons, and sandbags, and their removal are displayed in the
-   * equation in the order that balloons and baskets are added or removed
-   */
-  updateOutputValue(){
-    this.output = ""
-    for (let i = 0; i < Object.keys(this.outputValues).length; i++){
-      let value = this.outputOrder[i]
-      switch(value){
-        case "start":
-          this.output += " = " + this.signString(this.outputValues[value])
-          break
-        case "balloonsAdded":
-          this.output += " + " + `(${this.signString(this.outputValues[value])})`
-          break
-        case "balloonsRemoved":
-          this.output += " - " + `(${this.signString(this.outputValues[value])})`
-          break
-        case "sandBagsAdded":
-          this.output += " + " +`(${this.signString(-this.outputValues[value])})`
-          break
-        case "sandBagsRemoved":
-          this.output += " - " + `(${this.signString(-this.outputValues[value])})`
-          break
-      }
-    }
-
-    this.recordText?.setText(this.output)
-  }
-
-  /**
-   * 
-   * @param n the value of the number being converted to a signed string
-   * @returns return n if n <= 0, "+n" if n > 0
-   */
-  signString(n:number){
-    if (n <= 0){
-      return `${n}`
-
+  toggleEquation(){
+    if (this.toggleText == "Math Equation"){
+      this.toggleText = "Symbol Equation"
+      let temp = this.recordText
+      this.recordText = this.tempText
+      this.tempText = temp
+      this.recordText?.setVisible(temp!.visible)
+      this.tempText?.setVisible(false)
+      
     } else {
-      return `+${n}`
+      this.toggleText = "Math Equation"
+      let temp = this.recordText
+      this.recordText = this.tempText
+      this.tempText = temp
+      this.recordText?.setVisible(temp!.visible)
+      this.tempText?.setVisible(false)
+      
+
     }
+
+    this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
+    this.moveEquationLine()
   }
+
+
+ 
 
   addToOrder(array:string[], s:string){
     if (array.lastIndexOf(s) == -1){

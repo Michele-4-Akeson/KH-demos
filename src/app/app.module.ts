@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { TesterComponent } from './components/tester/tester.component';
 import { BalloonsComponent } from './components/balloons/balloons.component';
 
@@ -31,7 +32,8 @@ import { BalloonsComponent } from './components/balloons/balloons.component';
     BrowserAnimationsModule,
     MatSliderModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
