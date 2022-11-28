@@ -44,28 +44,29 @@ class SymbolGroup extends SvgText{
 
   override setVisible(state: boolean): void {
     super.setVisible(state)
-    if (!this.visible){
-      this.plusBalloon.setVisible(state)
-      this.minusBalloon.setVisible(state)
-      this.plusSandbag.setVisible(state)
-      this.minusSandbag.setVisible(state)
-    }
     
+    this.plusBalloon.setVisible(false)
+    this.minusBalloon.setVisible(false)
+    this.plusSandbag.setVisible(false)
+    this.minusSandbag.setVisible(false)
+        
   }
 
     override applyOrderedValues(values: Object, order: string[]): void {
+      console.log(values)
         let previousX = this.group.getBBox().left
         let output = ""
-        console.log(order.length)
+      
         for (let i = 0; i < Object.entries(values).length && i < order.length; i++){
-            console.log(i)
             let next = order[i]
+            console.log(next, Sprite.getProperty(values, next))
             switch(next){
               case "start":
                 output = " = " + this.signString(Sprite.getProperty(values, next))
                 this.startText.setText(output)
                 previousX = this.startText.getRight() + this.paddingX
                 this.startText.setVisible(true)
+
                 break
               case "balloonsAdded":
                 output = " + " + `${Sprite.getProperty(values, next)}`
@@ -74,6 +75,7 @@ class SymbolGroup extends SvgText{
                 this.plusBalloon.moveSymbol(null, this.startText.getMiddle())
                 previousX = this.plusBalloon.getRight() + this.paddingX
                 this.plusBalloon.setVisible(true)
+                
                 break
               case "balloonsRemoved":
                 output = " - " + `${(Sprite.getProperty(values, next))}`

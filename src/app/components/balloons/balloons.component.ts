@@ -69,8 +69,14 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
 
 
       // Addition of scene decorations (clouds, bushes, dirt) at random positions in a defined range
-      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "cloud", 15, -1220, 4000, 150, -1400, 1.5)
-      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, this.basket.getX() - 800, 700, basketBottom - 35, 0, null)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "hillSmall", this.basket.getX() - 2500, basketBottom - 160)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "hillLarge", basketRight + 700, basketBottom - 360)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "hillLarge", this.basket.getX() - 2000, basketBottom - 360)
+      AssetManager.createSpriteIn(this.svgRef.nativeElement, "hillSmall", basketRight + 2700, basketBottom - 160)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "cloud", 15, -1520, 4000, 140, -1200, 1.5)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "tree", 2, this.basket.getX() - 1600, 1200, basketBottom - 255, 0, null)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "tree", 3, basketRight + 200, 1700, basketBottom - 255, 0, null)
+      AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 4, this.basket.getX() - 2000, 2000, basketBottom - 35, 0, null)
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "bush", 3, basketRight + 200, 700, basketBottom - 35, 0, null)
       AssetManager.createSpritesInRange(this.svgRef.nativeElement, "dirtCircle", 8, this.basket.getX() + 10, this.basket.element.getBBox().width - 20, basketBottom, 350, 1.2)
 
@@ -97,8 +103,9 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.recordText.move(Sprite.getRight(this.ruler), basketBottom)
       this.tempText.move(Sprite.getRight(this.ruler), basketBottom)
       this.moveEquationLine()
+      
     
-    }, 450)
+    }, 650)
 
   }
 
@@ -297,6 +304,7 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     this.outputValues.start = this.currentValue
 
     this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
+    
   }
 
 
@@ -317,7 +325,6 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
       this.recordText?.setVisible(temp!.visible)
       this.tempText?.setVisible(false)
       
-
     }
 
     this.recordText?.applyOrderedValues(this.outputValues, this.outputOrder)
@@ -357,6 +364,8 @@ export class BalloonsComponent implements OnInit, AfterViewInit {
     }
   }
 
+
+  
   zoomOut(){
     if (this.zoomValue > 0 && this.canZoom){
       this.canZoom = false

@@ -8,6 +8,10 @@
       <image id="cloud" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887224/Cloud_qo9qcs.svg"/>
       <image id="bush" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887339/Grass_d1fwir.svg"/>
       <image id="spring" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1667921393/spring_oo5msr.svg" height="90"/>
+      <image id="tree" href="https://cdn-icons-png.flaticon.com/512/3564/3564350.png" height="250"/>
+      <image id="hillSmall" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="150"/>
+      <image id="hillLarge" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="350"/>
+
       <circle id="dirtCircle" r="5"/>
 
 
@@ -31,17 +35,17 @@
 
 
 <div class="buttonContainer">
-  <button (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg"/></button>
-  <button (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg"/></button>
+  <button class="Scale" (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg"/></button>
+  <button class="Scale" (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg"/></button>
 
-  <button (click)="toggleRecording()">
+  <button class="Scale" (click)="toggleRecording()">
     <img *ngIf="!isRecording" src="https://www.pngmart.com/files/3/Play-Button-PNG-Pic.png"/>
     <img *ngIf="isRecording" src="https://icons.iconarchive.com/icons/graphicloads/colorful-long-shadow/256/Button-2-pause-icon.png"/>
   </button>
   <mat-slide-toggle (click)="toggleEquation()">{{toggleText}}</mat-slide-toggle>
   
-  <button (click)="zoomIn()"><img src="https://www.iconpacks.net/icons/1/free-zoom-in-icon-978-thumb.png"/></button>
-  <button (click)="zoomOut()"><img src="https://icons.veryicon.com/png/o/miscellaneous/huihon_iconfont/zoom-21.png"/></button>
+  <button class="Scale" (click)="zoomIn()"><img src="../../../assets/zoomin.svg"></button>
+  <button class="Scale" (click)="zoomOut()"><img src="../../../assets/zoomout.svg"/></button>
   
 </div>
 
