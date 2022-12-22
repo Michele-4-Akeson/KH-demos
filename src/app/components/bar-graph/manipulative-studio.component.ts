@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import gsap from 'gsap';
 import AssetManager from 'src/KhDecorators/Pattern/AssetManager';
 import ScaleOnClick from 'src/KhDecorators/Decorators/ScaleOnClick';
-import Sprite from 'src/KhDecorators/Pattern/Sprite';
 import UseSprite from 'src/KhDecorators/Pattern/UseSprite';
 import GraphManager from './GraphManager';
 

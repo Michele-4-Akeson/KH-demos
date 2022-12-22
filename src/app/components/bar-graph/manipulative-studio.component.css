@@ -1,0 +1,20 @@
+.graphForm{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.graphForm input{
+    background-color: aliceblue;
+    border-radius: 5px;
+    width: 75px;
+}
+
+
+
+button{
+    background-color: blue;
+    color: white;
+    border-radius: 5px;
+}

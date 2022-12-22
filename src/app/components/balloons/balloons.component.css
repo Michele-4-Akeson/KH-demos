@@ -1,5 +1,6 @@
 
 
+
 .scene{
     position: absolute;
     left: 0px;
@@ -39,23 +40,26 @@
     position:absolute;
     z-index: 1;
     top: 0;
-    left: 0;
+    margin-right:95%;
     margin-top: 20px;
-    margin-left: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.buttonContainer button{
-    background: none;
-    border: none;
-    
+
+
+.pictureButton {
+  background: none;
+  border: none;
 }
 
-.buttonContainer button img{
+.pictureButton img{
     width: 50px;
 }
+
+
+
 
 .record{
     transform-origin: center;
@@ -71,7 +75,7 @@
 }
 
 .hide{
-    display: none;
+    display:none;
 }
 
 
@@ -85,4 +89,17 @@
 
 .Scale:active{
     transform: scale(1.5);
+}
+
+
+.toggleButton{
+    border-radius:5px;
+    transition:background-color 0.3s ease, transform 0.5s;
+}
+
+.toggleButton:hover{
+    transform:scale(1.2);
+    background-color: gray;
+    border-color: white
+
 }

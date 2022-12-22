@@ -1,58 +1,58 @@
-<svg class="scene" #svgref viewBox="-1920 -1080 5120 2880" xmlns="http://www.w3.org/2000/svg">
+<div>
+  <svg #svgref viewBox="-1920 -1080 5120 2880" xmlns="http://www.w3.org/2000/svg">
     <defs #spritedef>
       <!--add image-->
-      <image id="basket" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805539/Basket_mcgxw6.svg" height="100"/>
-      <image id="redBalloon" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg" width="50" height="50"/>
-      <image id="sandBag" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg" width="50" height="50"/>
-      <image id="ruler" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887324/ruler_rvsnrf.svg" height="720"/>
-      <image id="cloud" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887224/Cloud_qo9qcs.svg"/>
-      <image id="bush" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887339/Grass_d1fwir.svg"/>
-      <image id="spring" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1667921393/spring_oo5msr.svg" height="90"/>
-      <image id="tree" href="https://cdn-icons-png.flaticon.com/512/3564/3564350.png" height="250"/>
-      <image id="hillSmall" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="150"/>
-      <image id="hillLarge" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="350"/>
+      <image id="basket" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805539/Basket_mcgxw6.svg" height="100" />
+      <image id="redBalloon" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg" width="50" height="50" />
+      <image id="sandBag" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg" width="50" height="50" />
+      <image id="ruler" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887324/ruler_rvsnrf.svg" height="720" />
+      <image id="cloud" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887224/Cloud_qo9qcs.svg" />
+      <image id="bush" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666887339/Grass_d1fwir.svg" />
+      <image id="spring" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1667921393/spring_oo5msr.svg" height="90" />
+      <image id="tree" href="https://cdn-icons-png.flaticon.com/512/3564/3564350.png" height="250" />
+      <image id="hillSmall" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="150" />
+      <image id="hillLarge" href="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669656197/background_rsimu9.svg" height="350" />
 
-      <circle id="dirtCircle" r="5"/>
+      <circle id="dirtCircle" r="5" />
 
 
 
 
     </defs>
-    <rect id="background" x="-1920" y="-1080" width="5120" height="2880"/>
-    
+    <rect id="background" x="-1920" y="-1080" width="5120" height="2880" />
 
-    <rect id="dirtLayer1" x="-1920" y="360" width="5120" height="180"/>
-    <rect id="dirtLayer2" x="-1920" y="540" width="5120" height="1280"/>
 
-    
-    <rect id="holeLayer1" x="600" y="360" width="200" height="180"/>
-    <rect id="holeLayer2" x="600"  y="540" width="200" height="179"/>
-    <rect class="grass" x="-1920" y="360" id="grassLeft" width="2520" height="10"/>
-    <rect class="grass" x="800" y="360" id="grassRight" width="2520" height="10"/>
+    <rect id="dirtLayer1" x="-1920" y="360" width="5120" height="180" />
+    <rect id="dirtLayer2" x="-1920" y="540" width="5120" height="1280" />
 
-    <line class="hide" #whiteline x1="-1920" x2="5120" y1="0" y2="0" stroke="white" stroke-width="5" stroke-dasharray="10"/>
+
+    <rect id="holeLayer1" x="600" y="360" width="200" height="180" />
+    <rect id="holeLayer2" x="600" y="540" width="200" height="179" />
+    <rect class="grass" x="-1920" y="360" id="grassLeft" width="2520" height="10" />
+    <rect class="grass" x="800" y="360" id="grassRight" width="2520" height="10" />
+
+    <line class="hide" #whiteline x1="-1920" x2="5120" y1="0" y2="0" stroke="white" stroke-width="5" stroke-dasharray="10" />
   </svg>
 
 
-<div class="buttonContainer">
-  <button class="Scale" (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg"/></button>
-  <button class="Scale" (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg"/></button>
+  <div class="buttonContainer">
+    <button class="Scale pictureButton" (click)="addBalloon()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805549/red_balloon_zclcsz.svg" /></button>
+    <button class="Scale pictureButton" (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg" /></button>
 
-  <button class="Scale" (click)="toggleRecording()">
-    <img *ngIf="!isRecording" src="https://www.pngmart.com/files/3/Play-Button-PNG-Pic.png"/>
-    <img *ngIf="isRecording" src="https://icons.iconarchive.com/icons/graphicloads/colorful-long-shadow/256/Button-2-pause-icon.png"/>
-  </button>
-  <mat-slide-toggle (click)="toggleEquation()">{{toggleText}}</mat-slide-toggle>
-  
-  <button class="Scale" (click)="zoomIn()"><img src="../../../assets/zoomin.svg"></button>
-  <button class="Scale" (click)="zoomOut()"><img src="../../../assets/zoomout.svg"/></button>
-  
+    <button class="Scale pictureButton" (click)="toggleRecording()">
+      <img *ngIf="!isRecording" src="https://www.pngmart.com/files/3/Play-Button-PNG-Pic.png" />
+      <img *ngIf="isRecording" src="https://icons.iconarchive.com/icons/graphicloads/colorful-long-shadow/256/Button-2-pause-icon.png" />
+    </button>
+
+    <button class="toggleButton" (click)="toggleEquation()">{{toggleText}}</button>
+
+    <button class="Scale pictureButton" (click)="zoomIn()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669920099/zoomin_xbboje.svg" /></button>
+    <button class="Scale pictureButton" (click)="zoomOut()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1669920104/zoomout_lhr17z.svg" /></button>
+
+  </div>
+
+
 </div>
 
-
-
-
-  
-  
 
   
