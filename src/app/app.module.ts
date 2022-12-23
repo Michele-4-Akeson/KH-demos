@@ -14,6 +14,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { TesterComponent } from './components/tester/tester.component';
 import { BalloonsComponent } from './components/balloons/balloons.component';
+import { KeyMovementComponent } from './components/key-movement/key-movement.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { BalloonsComponent } from './components/balloons/balloons.component';
     ClipTemplateComponent,
     TesterComponent,
     BalloonsComponent,
+    KeyMovementComponent,
   ],
   imports: [
     BrowserModule, 
