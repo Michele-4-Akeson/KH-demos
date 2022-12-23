@@ -40,8 +40,10 @@
     <button class="Scale pictureButton" (click)="addSandBag()"><img src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1666805554/SandBag_wqpqdx.svg" /></button>
 
     <button class="Scale pictureButton" (click)="toggleRecording()">
-
+      <img *ngIf="!isRecording" src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1671732423/record_g07dbz.svg" />
+      <img *ngIf="isRecording" src="https://res.cloudinary.com/dbsatj5xc/image/upload/v1671732434/pause_qcbrsl.svg" />
     </button>
+
 
     <button class="toggleButton" (click)="toggleEquation()">{{toggleText}}</button>
 
